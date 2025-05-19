@@ -1,0 +1,18 @@
+# === FRONTEND ===
+SmartPantry-frontend/node_modules/
+SmartPantry-frontend/dist/
+SmartPantry-frontend/.env
+SmartPantry-frontend/.DS_Store
+
+# === BACKEND ===
+SmartPantry-backend/bin/
+SmartPantry-backend/obj/
+SmartPantry-backend/.vs/
+SmartPantry-backend/*.user
+SmartPantry-backend/*.http
+
+# === General ===
+*.log
+.env
+.vscode/
+.DS_Store
