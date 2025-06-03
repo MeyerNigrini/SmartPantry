@@ -1,0 +1,12 @@
+C:\Users\Meyer\Downloads\SmartPantry\SmartPantry-backend\2-DataAccess\SmartPantry.DataAccess\bin\Debug\net9.0\SmartPantry.DataAccess.deps.json
+C:\Users\Meyer\Downloads\SmartPantry\SmartPantry-backend\2-DataAccess\SmartPantry.DataAccess\bin\Debug\net9.0\SmartPantry.DataAccess.dll
+C:\Users\Meyer\Downloads\SmartPantry\SmartPantry-backend\2-DataAccess\SmartPantry.DataAccess\bin\Debug\net9.0\SmartPantry.DataAccess.pdb
+C:\Users\Meyer\Downloads\SmartPantry\SmartPantry-backend\2-DataAccess\SmartPantry.DataAccess\obj\Debug\net9.0\SmartPantry.DataAccess.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Meyer\Downloads\SmartPantry\SmartPantry-backend\2-DataAccess\SmartPantry.DataAccess\obj\Debug\net9.0\SmartPantry.DataAccess.AssemblyInfoInputs.cache
+C:\Users\Meyer\Downloads\SmartPantry\SmartPantry-backend\2-DataAccess\SmartPantry.DataAccess\obj\Debug\net9.0\SmartPantry.DataAccess.AssemblyInfo.cs
+C:\Users\Meyer\Downloads\SmartPantry\SmartPantry-backend\2-DataAccess\SmartPantry.DataAccess\obj\Debug\net9.0\SmartPantry.DataAccess.csproj.CoreCompileInputs.cache
+C:\Users\Meyer\Downloads\SmartPantry\SmartPantry-backend\2-DataAccess\SmartPantry.DataAccess\obj\Debug\net9.0\SmartPantry.DataAccess.sourcelink.json
+C:\Users\Meyer\Downloads\SmartPantry\SmartPantry-backend\2-DataAccess\SmartPantry.DataAccess\obj\Debug\net9.0\SmartPantry.DataAccess.dll
+C:\Users\Meyer\Downloads\SmartPantry\SmartPantry-backend\2-DataAccess\SmartPantry.DataAccess\obj\Debug\net9.0\refint\SmartPantry.DataAccess.dll
+C:\Users\Meyer\Downloads\SmartPantry\SmartPantry-backend\2-DataAccess\SmartPantry.DataAccess\obj\Debug\net9.0\SmartPantry.DataAccess.pdb
+C:\Users\Meyer\Downloads\SmartPantry\SmartPantry-backend\2-DataAccess\SmartPantry.DataAccess\obj\Debug\net9.0\ref\SmartPantry.DataAccess.dll
