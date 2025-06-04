@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SmartPantry.Services")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+be193917114d1b1934ba4bf8d1eca5fa0da0cd81")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b5dd97ffa666d1e54cf846ea7ecb759826783bbd")]
 [assembly: System.Reflection.AssemblyProductAttribute("SmartPantry.Services")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SmartPantry.Services")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

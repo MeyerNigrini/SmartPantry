@@ -1,18 +1,57 @@
-# === FRONTEND ===
-SmartPantry-frontend/node_modules/
-SmartPantry-frontend/dist/
-SmartPantry-frontend/.env
-SmartPantry-frontend/.DS_Store
+# Ignore build output folders
+**/bin/
+**/obj/
 
-# === BACKEND ===
-SmartPantry-backend/bin/
-SmartPantry-backend/obj/
-SmartPantry-backend/.vs/
-SmartPantry-backend/*.user
-SmartPantry-backend/*.http
+# Ignore user-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
 
-# === General ===
-*.log
-.env
+# Ignore Visual Studio Code settings
 .vscode/
+.vs/
+
+# Ignore build results
+*.dll
+*.exe
+*.pdb
+*.cache
+*.db
+*.log
+
+# Ignore test results
+TestResults/
+*.coverage
+*.coveragejson
+
+# Ignore publish folder
+publish/
+**/publish/
+
+# Ignore NuGet packages
+*.nupkg
+*.snupkg
+.nuget/
+
+# Ignore secrets or local configs
+secrets.json
+appsettings.Development.json
+
+# Ignore Rider IDE files (if applicable)
+.idea/
+
+# Ignore frontend build artifacts (in case of React or similar frontend)
+**/node_modules/
+**/dist/
+**/build/
+npm-debug.log
+yarn-error.log
+.pnpm-debug.log
+.env
+.env.*
+
+# Ignore system files
+Thumbs.db
+Desktop.ini
 .DS_Store
