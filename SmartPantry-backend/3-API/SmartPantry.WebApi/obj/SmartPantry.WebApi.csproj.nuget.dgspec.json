@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Meyer\\Downloads\\SmartPantry\\SmartPantry-backend\\3-Api\\SmartPantry.WebApi\\SmartPantry.WebApi.csproj": {}
+    "C:\\Users\\Meyer\\Downloads\\SmartPantry\\SmartPantry-backend\\3-API\\SmartPantry.WebApi\\SmartPantry.WebApi.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Meyer\\Downloads\\SmartPantry\\SmartPantry-backend\\3-Api\\SmartPantry.WebApi\\SmartPantry.WebApi.csproj": {
+    "C:\\Users\\Meyer\\Downloads\\SmartPantry\\SmartPantry-backend\\3-API\\SmartPantry.WebApi\\SmartPantry.WebApi.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Meyer\\Downloads\\SmartPantry\\SmartPantry-backend\\3-Api\\SmartPantry.WebApi\\SmartPantry.WebApi.csproj",
+        "projectUniqueName": "C:\\Users\\Meyer\\Downloads\\SmartPantry\\SmartPantry-backend\\3-API\\SmartPantry.WebApi\\SmartPantry.WebApi.csproj",
         "projectName": "SmartPantry.WebApi",
-        "projectPath": "C:\\Users\\Meyer\\Downloads\\SmartPantry\\SmartPantry-backend\\3-Api\\SmartPantry.WebApi\\SmartPantry.WebApi.csproj",
+        "projectPath": "C:\\Users\\Meyer\\Downloads\\SmartPantry\\SmartPantry-backend\\3-API\\SmartPantry.WebApi\\SmartPantry.WebApi.csproj",
         "packagesPath": "C:\\Users\\Meyer\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Meyer\\Downloads\\SmartPantry\\SmartPantry-backend\\3-Api\\SmartPantry.WebApi\\obj\\",
+        "outputPath": "C:\\Users\\Meyer\\Downloads\\SmartPantry\\SmartPantry-backend\\3-API\\SmartPantry.WebApi\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "RRUJve0va3Y=",
+  "dgSpecHash": "xfFozB5yqeg=",
   "success": true,
-  "projectFilePath": "C:\\Users\\Meyer\\Downloads\\SmartPantry\\SmartPantry-backend\\3-Api\\SmartPantry.WebApi\\SmartPantry.WebApi.csproj",
+  "projectFilePath": "C:\\Users\\Meyer\\Downloads\\SmartPantry\\SmartPantry-backend\\3-API\\SmartPantry.WebApi\\SmartPantry.WebApi.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Meyer\\.nuget\\packages\\microsoft.aspnetcore.openapi\\9.0.4\\microsoft.aspnetcore.openapi.9.0.4.nupkg.sha512",
     "C:\\Users\\Meyer\\.nuget\\packages\\microsoft.extensions.apidescription.server\\6.0.5\\microsoft.extensions.apidescription.server.6.0.5.nupkg.sha512",
