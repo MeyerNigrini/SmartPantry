@@ -4,6 +4,7 @@
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>c69628be-1ce7-45af-a407-22b57e155acb</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -17,6 +18,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\1-Shared\SmartPantry.Core\SmartPantry.Core.csproj" />
+    <ProjectReference Include="..\..\1-Shared\SmartPantry.Services\SmartPantry.Services.csproj" />
     <ProjectReference Include="..\..\2-DataAccess\SmartPantry.DataAccess\SmartPantry.DataAccess.csproj" />
   </ItemGroup>
 
