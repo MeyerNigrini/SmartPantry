@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using SmartPantry.Core.Interfaces.Services;
-using System.Text.Json;
-using SmartPantry.Core.DTOs;
+
 
 namespace SmartPantry.WebApi.Controllers
 {
@@ -17,7 +16,8 @@ namespace SmartPantry.WebApi.Controllers
             _geminiService = geminiService;
         }
 
-        [HttpPost]
+        [HttpPost("recipes")]
+        [Authorize]
         public async Task<IActionResult> Ask()
         {
             // Replace with actual data from DB

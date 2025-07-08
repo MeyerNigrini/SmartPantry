@@ -1,7 +1,9 @@
-﻿using System;
-
-namespace SmartPantry.Core.Entities
+﻿namespace SmartPantry.Core.Entities
 {
+    /// <summary>
+    /// Represents a user in the system.
+    /// Stores user details, password hash, and related entities.
+    /// </summary>
     public class UserEntity
     {
         public Guid Id { get; set; }
