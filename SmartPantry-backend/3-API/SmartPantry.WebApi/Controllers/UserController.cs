@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SmartPantry.Core.DTOs;
+using SmartPantry.Core.DTOs.User;
 using SmartPantry.Core.Exceptions;
 using SmartPantry.Core.Interfaces.Services;
 

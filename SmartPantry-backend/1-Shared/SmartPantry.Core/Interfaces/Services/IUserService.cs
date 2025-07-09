@@ -1,4 +1,4 @@
-﻿using SmartPantry.Core.DTOs;
+﻿using SmartPantry.Core.DTOs.User;
 
 namespace SmartPantry.Core.Interfaces.Services
 {
@@ -19,6 +19,6 @@ namespace SmartPantry.Core.Interfaces.Services
         /// </summary>
         /// <param name="request">Registration request DTO containing user details.</param>
         /// <returns>UserResponseDTO with created user information.</returns>
-        Task<UserResponseDTO> RegisterUserAsync(RegisterUserRequestDTO request);
+        Task<RegisterUserResponseDTO> RegisterUserAsync(RegisterUserRequestDTO request);
     }
 }

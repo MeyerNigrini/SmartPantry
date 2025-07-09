@@ -17,8 +17,9 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// HttpClient for GeminiService
+// HttpClients
 builder.Services.AddHttpClient<IGeminiService, GeminiService>();
+builder.Services.AddHttpClient<IOpenFoodFactsService, OpenFoodFactsService>();
 
 // Database context
 builder.Services.AddDbContext<SmartPantryDbContext>(
@@ -31,6 +32,8 @@ builder.Services.AddDbContext<SmartPantryDbContext>(
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddSingleton<IPasswordService, PasswordService>();
+builder.Services.AddScoped<IFoodProductRepository, FoodProductRepository>();
+builder.Services.AddScoped<IFoodProductService, FoodProductService>();
 
 builder.Services.Configure<JWTSettings>(builder.Configuration.GetSection("Jwt"));
 

@@ -1,0 +1,20 @@
+meta {
+  name: Post FoodProduct
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{BaseURL}}{{Controller}}
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "barcode": "string",
+    "productName": "string",
+    "quantity": "string",
+    "brands": "string"
+  }
+}

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace SmartPantry.Core.DTOs
+namespace SmartPantry.Core.DTOs.User
 {
     /// <summary>
     /// DTO for user login input.

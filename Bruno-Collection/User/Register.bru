@@ -6,6 +6,15 @@ meta {
 
 post {
   url: {{BaseURL}}{{Controller}}/register
-  body: none
+  body: json
   auth: none
+}
+
+body:json {
+  {
+    "firstName": "string",
+    "lastName": "string",
+    "email": "user@example.com",
+    "password": "string"
+  }
 }

@@ -1,5 +1,5 @@
 ﻿using NUnit.Framework;
-using SmartPantry.Core.DTOs;
+using SmartPantry.Core.DTOs.User;
 using SmartPantry.Core.Entities;
 using AwesomeAssertions;
 using Moq;

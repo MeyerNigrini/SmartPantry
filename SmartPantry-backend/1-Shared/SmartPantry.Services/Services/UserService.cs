@@ -4,7 +4,7 @@ using System.Text;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using SmartPantry.Core.DTOs;
+using SmartPantry.Core.DTOs.User;
 using SmartPantry.Core.Entities;
 using SmartPantry.Core.Exceptions;
 using SmartPantry.Core.Interfaces.Repositories;
@@ -39,7 +39,7 @@ namespace SmartPantry.Services.Services
         }
 
         /// <inheritdoc/>
-        public async Task<UserResponseDTO> RegisterUserAsync(RegisterUserRequestDTO request)
+        public async Task<RegisterUserResponseDTO> RegisterUserAsync(RegisterUserRequestDTO request)
         {
             // Trimming of input fields
             request.FirstName = request.FirstName?.Trim();
@@ -70,7 +70,7 @@ namespace SmartPantry.Services.Services
 
             _logger.LogInformation("User with email {Email} registered successfully.", user.Email);
 
-            return new UserResponseDTO
+            return new RegisterUserResponseDTO
             {
                 Id = user.Id,
                 FirstName = user.FirstName,
