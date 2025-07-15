@@ -6,25 +6,25 @@ import {
   Title,
   Stack,
   Notification,
-} from '@mantine/core';
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { register } from '../../lib/authService';
+} from "@mantine/core";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { register } from "../services/authService";
 
 export default function RegisterPage() {
   const navigate = useNavigate();
 
   // Form state
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [error, setError] = useState('');
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [error, setError] = useState("");
 
   // Handle register form submission
   const handleRegister = async () => {
-    setError('');
+    setError("");
 
     if (password !== confirmPassword) {
       setError("Passwords don't match");
@@ -33,20 +33,32 @@ export default function RegisterPage() {
 
     try {
       await register({ firstName, lastName, email, password });
-      navigate('/'); // Redirect to login on success
+      navigate("/"); // Redirect to login on success
     } catch (err: unknown) {
-      if (err && typeof err === 'object' && 'response' in err) {
-        const errorTyped = err as { response?: { data?: { message?: string } } };
-        setError(errorTyped.response?.data?.message || 'Registration failed');
+      if (err && typeof err === "object" && "response" in err) {
+        const errorTyped = err as {
+          response?: { data?: { message?: string } };
+        };
+        setError(errorTyped.response?.data?.message || "Registration failed");
       } else {
-        setError('Registration failed');
+        setError("Registration failed");
       }
     }
   };
 
   return (
-    <Paper withBorder shadow="sm" p="xl" radius="md" maw={400} mx="auto" mt="xl">
-      <Title order={2} mb="md">Register</Title>
+    <Paper
+      withBorder
+      shadow="sm"
+      p="xl"
+      radius="md"
+      maw={400}
+      mx="auto"
+      mt="xl"
+    >
+      <Title order={2} mb="md">
+        Register
+      </Title>
       <Stack>
         <TextInput
           label="First Name"
@@ -73,7 +85,9 @@ export default function RegisterPage() {
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.currentTarget.value)}
         />
-        <Button fullWidth onClick={handleRegister}>Register</Button>
+        <Button fullWidth onClick={handleRegister}>
+          Register
+        </Button>
 
         {error && (
           <Notification color="red" mt="md">

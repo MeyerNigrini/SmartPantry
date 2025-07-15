@@ -1,5 +1,5 @@
 // Handles login API call
-import api from './api';
+import api from "../../../lib/api";
 
 interface LoginRequest {
   email: string;
@@ -15,7 +15,7 @@ export interface LoginResponse {
 }
 
 export async function login(request: LoginRequest): Promise<LoginResponse> {
-  const response = await api.post<LoginResponse>('/User/login', request);
+  const response = await api.post<LoginResponse>("/User/login", request);
   return response.data;
 }
 
@@ -27,5 +27,5 @@ interface RegisterRequest {
 }
 
 export async function register(request: RegisterRequest): Promise<void> {
-  await api.post('/User/register', request);
+  await api.post("/User/register", request);
 }

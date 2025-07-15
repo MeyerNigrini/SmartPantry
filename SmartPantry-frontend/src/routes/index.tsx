@@ -1,10 +1,10 @@
 // Declares app routes
-import { Route, Routes } from 'react-router-dom';
-import LoginPage from '../pages/auth/LoginPage';
-import HomePage from '../pages/home/HomePage';
-import RegisterPage from '../pages/auth/RegisterPage';
-import ProtectedRoute from './ProtectedRoute';
-import Layout from '../components/layout/Layout';
+import { Route, Routes } from "react-router-dom";
+import LoginPage from "../features/auth/pages/LoginPage";
+import HomePage from "../features/home/pages/HomePage";
+import RegisterPage from "../features/auth/pages/RegisterPage";
+import ProtectedRoute from "./ProtectedRoute";
+import Layout from "../components/Layout";
 
 export default function AppRoutes() {
   return (
