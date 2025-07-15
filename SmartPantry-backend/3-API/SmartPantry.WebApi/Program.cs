@@ -1,4 +1,4 @@
-using System.Text;
+﻿using System.Text;
 using Microsoft.EntityFrameworkCore;
 using SmartPantry.Core.Interfaces.Repositories;
 using SmartPantry.Core.Interfaces.Services;
@@ -16,6 +16,18 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// CORS policy
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend", policy =>
+    {
+        policy.WithOrigins("http://localhost:5173") // 👈 frontend dev server
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
 
 // HttpClients
 builder.Services.AddHttpClient<IGeminiService, GeminiService>();
@@ -69,6 +81,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors("AllowFrontend");
 
 app.UseAuthentication();
 app.UseAuthorization();
