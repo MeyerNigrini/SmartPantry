@@ -26,7 +26,6 @@ interface RegisterRequest {
   password: string;
 }
 
-// Adjust the return type if your backend responds with a token or just status
 export async function register(request: RegisterRequest): Promise<void> {
-  await api.post('/User/register', request); // ✅ Match your actual backend endpoint
+  await api.post('/User/register', request);
 }
