@@ -22,9 +22,9 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
     {
-        policy.WithOrigins("http://localhost:5173") // 👈 frontend dev server
-              .AllowAnyHeader()
-              .AllowAnyMethod();
+        policy.WithOrigins("http://localhost:5173") 
+             .AllowAnyHeader()
+             .AllowAnyMethod();
     });
 });
 
@@ -47,8 +47,8 @@ builder.Services.AddSingleton<IPasswordService, PasswordService>();
 builder.Services.AddScoped<IFoodProductRepository, FoodProductRepository>();
 builder.Services.AddScoped<IFoodProductService, FoodProductService>();
 
+// JWT configuration
 builder.Services.Configure<JWTSettings>(builder.Configuration.GetSection("Jwt"));
-
 var jwtSettings = builder.Configuration.GetSection("Jwt").Get<JWTSettings>();
 
 // JWT Tokens
