@@ -1,12 +1,20 @@
-import { useEffect, useState } from 'react';
-import { Title, Stack, Text, Notification, Button } from '@mantine/core';
-import BarcodeScanner from '../../../components/BarcodeScanner';
+import { useState } from 'react';
+import {
+  Title,
+  Stack,
+  Text,
+  Notification,
+  Button,
+  TextInput,
+  Group,
+} from '@mantine/core';
+import BarcodeScanner from '../components/BarcodeScanner';
 import ProductForm from '../components/ProductForm';
 import { fetchProductByBarcode, saveProduct } from '../services/productService';
 import type { ProductAdd } from '../types/productTypes';
 
 export default function ScanProductPage() {
-  const [scannedValue, setScannedValue] = useState<string | null>(null);
+  const [barcode, setBarcode] = useState('');
   const [product, setProduct] = useState<ProductAdd>({
     barcode: '',
     productName: '',
@@ -18,39 +26,38 @@ export default function ScanProductPage() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
-  useEffect(() => {
-    if (!scannedValue) return;
+  const handleScan = (scanned: string) => {
+    setBarcode(scanned);
+    handleSearch(scanned);
+  };
 
-    const loadProduct = async () => {
-      try {
-        const data = await fetchProductByBarcode(scannedValue);
-        setProduct(data);
-        setNotFound(false);
-        setError('');
-      } catch (err: unknown) {
-        setNotFound(true);
-        setProduct({
-          barcode: scannedValue,
-          productName: '',
-          quantity: '',
-          brands: '',
-          categories: '',
-        });
+  const handleSearch = async (code = barcode) => {
+    if (!code) return;
 
-        if (err instanceof Error) {
-          setError(err.message); // message: "Product not found" or "Failed to fetch product"
-        } else {
-          setError('Something went wrong');
-        }
+    try {
+      const data = await fetchProductByBarcode(code);
+      setProduct(data);
+      setNotFound(false);
+      setError('');
+    } catch (err: unknown) {
+      setNotFound(true);
+      setProduct({
+        barcode: code,
+        productName: '',
+        quantity: '',
+        brands: '',
+        categories: '',
+      });
+
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError('Something went wrong');
       }
-    };
-
-    loadProduct();
-  }, [scannedValue]);
+    }
+  };
 
   const handleSave = async () => {
-    console.log('Payload to be sent:', product);
-
     try {
       await saveProduct(product);
       setSuccess('Product saved successfully');
@@ -66,7 +73,17 @@ export default function ScanProductPage() {
     <Stack>
       <Title>Scan or Add Product</Title>
 
-      <BarcodeScanner onScan={setScannedValue} />
+      <BarcodeScanner onScan={handleScan} />
+
+      <Group align="end">
+        <TextInput
+          label="Barcode"
+          placeholder="Enter or scan a barcode"
+          value={barcode}
+          onChange={(e) => setBarcode(e.currentTarget.value)}
+        />
+        <Button onClick={() => handleSearch()}>Search Product</Button>
+      </Group>
 
       {notFound && <Text color="red">Product not found. Please enter the details manually.</Text>}
 

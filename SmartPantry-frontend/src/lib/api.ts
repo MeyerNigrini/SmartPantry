@@ -1,4 +1,4 @@
-// Axios instance + auth header logic
+// Create a preconfigured Axios instance with base URL and JSON headers
 import axios from 'axios';
 
 const api = axios.create({
@@ -8,7 +8,11 @@ const api = axios.create({
   },
 });
 
-// Export token helper
+/**
+ * Sets or removes the Authorization header for authenticated requests
+ *
+ * @param token - JWT token string, or null to clear the header
+ */
 export const setAuthToken = (token: string | null) => {
   if (token) {
     api.defaults.headers.common['Authorization'] = `Bearer ${token}`;

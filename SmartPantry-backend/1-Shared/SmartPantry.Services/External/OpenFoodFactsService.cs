@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using Microsoft.Extensions.Logging;
 using SmartPantry.Core.DTOs.OpenFoodFacts;
 using SmartPantry.Core.Interfaces.Services;
 
@@ -7,50 +8,77 @@ namespace SmartPantry.Services.External
     public class OpenFoodFactsService : IOpenFoodFactsService
     {
         private readonly HttpClient _httpClient;
+        private readonly ILogger<OpenFoodFactsService> _logger;
 
-        public OpenFoodFactsService(HttpClient httpClient)
+        public OpenFoodFactsService(HttpClient httpClient, ILogger<OpenFoodFactsService> logger)
         {
             _httpClient = httpClient;
+            _logger = logger;
         }
 
         public async Task<ProductDetailsResponseDTO> GetProductDetailsByBarcodeAsync(string barcode)
         {
-            var url = $"https://world.openfoodfacts.org/api/v0/product/{barcode}.json";
-            var response = await _httpClient.GetAsync(url);
-
-            if (!response.IsSuccessStatusCode)
+            var fallback = new ProductDetailsResponseDTO
             {
-                throw new Exception("Failed to fetch product details from OpenFoodFacts API.");
-            }
+                Name = "Unknown",
+                Brands = "Unknown",
+                Categories = "Unknown",
+                Quantity = "Unknown",
+                StatusVerbose = "error"
+            };
 
-            var jsonString = await response.Content.ReadAsStringAsync();
-            using var doc = JsonDocument.Parse(jsonString);
-            var root = doc.RootElement;
-
-            var statusVerbose = root.GetProperty("status_verbose").GetString();
-
-            if (statusVerbose == "product not found")
+            try
             {
+                var url = $"https://world.openfoodfacts.org/api/v0/product/{barcode}.json";
+                var response = await _httpClient.GetAsync(url);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    _logger.LogWarning("OpenFoodFacts request failed: {StatusCode}", response.StatusCode);
+                    return fallback;
+                }
+
+                var jsonString = await response.Content.ReadAsStringAsync();
+                using var doc = JsonDocument.Parse(jsonString);
+                var root = doc.RootElement;
+
+                var statusVerbose = root.GetProperty("status_verbose").GetString();
+
+                if (statusVerbose == "product not found")
+                {
+                    return new ProductDetailsResponseDTO
+                    {
+                        Name = "Unknown",
+                        Brands = "Unknown",
+                        Categories = "Unknown",
+                        Quantity = "Unknown",
+                        StatusVerbose = statusVerbose
+                    };
+                }
+
+                if (!root.TryGetProperty("product", out var product))
+                {
+                    _logger.LogWarning("Missing 'product' property in OpenFoodFacts response for barcode {Barcode}", barcode);
+                    return fallback;
+                }
+
+                string GetSafeString(JsonElement parent, string key)
+                    => parent.TryGetProperty(key, out var prop) ? prop.GetString() ?? "Unknown" : "Unknown";
+
                 return new ProductDetailsResponseDTO
                 {
-                    StatusVerbose = "product not found"
+                    Name = GetSafeString(product, "product_name"),
+                    Brands = GetSafeString(product, "brands"),
+                    Categories = GetSafeString(product, "categories"),
+                    Quantity = GetSafeString(product, "quantity"),
+                    StatusVerbose = statusVerbose ?? "error"
                 };
             }
-
-            var product = root.GetProperty("product");
-            var name = product.GetProperty("product_name").GetString() ?? "Unknown";
-            var quantity = product.GetProperty("quantity").GetString() ?? "Unknown";
-            var brands = product.TryGetProperty("brands", out var brandsProp) ? brandsProp.GetString() ?? "Unknown" : "Unknown";
-            var categories = product.TryGetProperty("categories", out var categoriesProp) ? categoriesProp.GetString() ?? "Unknown" : "Unknown";
-
-            return new ProductDetailsResponseDTO
+            catch (Exception ex)
             {
-                Name = name,
-                Brands = brands,
-                Categories = categories,
-                Quantity = quantity,
-                StatusVerbose = statusVerbose ?? string.Empty
-            };
+                _logger.LogError(ex, "Failed to parse OpenFoodFacts response for barcode {Barcode}", barcode);
+                return fallback;
+            }
         }
     }
 }

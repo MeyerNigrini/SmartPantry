@@ -24,7 +24,7 @@ export async function saveProduct(product: ProductAdd): Promise<void> {
     brands: product.brands,
     categories: product.categories,
   };
-  await api.post('/FoodProduct', dto);
+  await api.post('/FoodProduct/addFoodProduct', dto);
 }
 
 // GET all products of a user

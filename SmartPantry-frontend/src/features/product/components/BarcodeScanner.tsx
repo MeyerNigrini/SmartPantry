@@ -1,28 +1,27 @@
 import { useEffect, useRef, useState } from 'react';
 import { Html5Qrcode } from 'html5-qrcode';
-import { Box, Button, Stack, Text, TextInput } from '@mantine/core';
+import { Box, Button, Stack, Text } from '@mantine/core';
 
 type BarcodeScannerProps = {
   onScan: (decodedText: string) => void;
 };
 
 export default function BarcodeScanner({ onScan }: BarcodeScannerProps) {
+  // State for managing scanner status and results
   const [isScanning, setIsScanning] = useState(false);
   const [error, setError] = useState('');
-  const [barcode, setBarcode] = useState('');
+
+  // Refs for scanner instance and device/camera
   const scannerRef = useRef<Html5Qrcode | null>(null);
   const cameraIdRef = useRef<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
+  // Clean up scanner when component unmounts
   useEffect(() => {
     return () => stopScanner();
   }, []);
 
-  const handleBarcodeChange = (value: string) => {
-    setBarcode(value);
-    onScan(value);
-  };
-
+  // Starts the live camera scanner
   const startScanner = async () => {
     setError('');
     setIsScanning(true);
@@ -45,13 +44,13 @@ export default function BarcodeScanner({ onScan }: BarcodeScannerProps) {
       const scanner = new Html5Qrcode('scanner-container');
       scannerRef.current = scanner;
 
+      // Start the camera stream and listen for barcode detections
       await scanner.start(
         cameraIdRef.current,
         config,
         (decodedText) => {
-          setBarcode(decodedText);
           onScan(decodedText);
-          stopScanner();
+          stopScanner(); // Auto-stop on successful scan
         },
         (err: unknown) => {
           if (err instanceof Error && err.name !== 'NotFoundException') {
@@ -66,6 +65,7 @@ export default function BarcodeScanner({ onScan }: BarcodeScannerProps) {
     }
   };
 
+  // Stops the live scanner and clears the container
   const stopScanner = () => {
     if (scannerRef.current) {
       scannerRef.current.stop().then(() => {
@@ -76,6 +76,7 @@ export default function BarcodeScanner({ onScan }: BarcodeScannerProps) {
     setIsScanning(false);
   };
 
+  // Scans a barcode from an uploaded image
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
@@ -83,7 +84,6 @@ export default function BarcodeScanner({ onScan }: BarcodeScannerProps) {
     try {
       const scanner = new Html5Qrcode('scanner-container');
       const result = await scanner.scanFile(file, true);
-      setBarcode(result);
       onScan(result);
     } catch (err) {
       console.error('Image scan error:', err);
@@ -98,17 +98,7 @@ export default function BarcodeScanner({ onScan }: BarcodeScannerProps) {
       {/* Control Panel */}
       <Box>
         <Stack>
-          <TextInput
-            label="Barcode"
-            placeholder="Enter or scan a barcode"
-            value={barcode}
-            onChange={(e) => handleBarcodeChange(e.currentTarget.value)}
-          />
-
-          <Button onClick={() => onScan(barcode)} disabled={!barcode.trim()}>
-            Search Product
-          </Button>
-
+          {/* Toggle live camera scanning */}
           <Button
             onClick={isScanning ? stopScanner : startScanner}
             color={isScanning ? 'red' : 'blue'}
@@ -116,9 +106,13 @@ export default function BarcodeScanner({ onScan }: BarcodeScannerProps) {
             {isScanning ? 'Stop Scanner' : 'Start Scanner'}
           </Button>
 
-          <Button onClick={() => fileInputRef.current?.click()}>Upload Image to Scan</Button>
+          {/* Trigger image file input to scan a static image */}
+          <Button onClick={() => fileInputRef.current?.click()}>
+            Upload Image to Scan
+          </Button>
         </Stack>
 
+        {/* Hidden file input for image upload */}
         <input
           type="file"
           accept="image/*"
@@ -128,7 +122,7 @@ export default function BarcodeScanner({ onScan }: BarcodeScannerProps) {
         />
       </Box>
 
-      {/* Scanner Camera Section */}
+      {/* Camera stream renders into this container */}
       <Box
         id="scanner-container"
         w={600}
@@ -141,6 +135,7 @@ export default function BarcodeScanner({ onScan }: BarcodeScannerProps) {
         }}
       />
 
+      {/* Error message displayed if any issue occurs */}
       {error && <Text color="red">{error}</Text>}
     </Stack>
   );

@@ -36,7 +36,7 @@ namespace SmartPantry.WebApi.Controllers
                 "  \"ingredients\": [\"ingredient 1\", \"ingredient 2\", ...],\n" +
                 "  \"instructions\": [\"Step 1:\", \"Step 2:\", \"Step 3:\", ...]\n" +
                 "}\n\n" +
-                "Use only the ingredients provided if possible. Avoid adding other items unless absolutely necessary for a complete recipe.\n\n" +
+                "Use only the ingredients provided.\n\n" +
                 "Ingredients:\n- " + formattedIngredients;
 
             var recipe = await _geminiService.GetGeminiResponse(prompt);
