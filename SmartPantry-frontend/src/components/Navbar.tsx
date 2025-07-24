@@ -27,6 +27,9 @@ export default function Navbar() {
         SmartPantry
       </Title>
       <Group>
+        <Button size="xs" variant="light" onClick={() => navigate('/scan-product')}>
+          Scan Product
+        </Button>
         <Button color="red" size="xs" onClick={handleLogout}>
           Logout
         </Button>

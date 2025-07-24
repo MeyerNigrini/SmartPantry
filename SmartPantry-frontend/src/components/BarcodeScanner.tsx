@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Html5Qrcode } from "html5-qrcode";
-import { Box, Button, Stack, Text } from "@mantine/core";
+import { Box, Button, Stack, Text, TextInput } from "@mantine/core";
 
 type BarcodeScannerProps = {
   onScan: (decodedText: string) => void;
@@ -9,13 +9,19 @@ type BarcodeScannerProps = {
 export default function BarcodeScanner({ onScan }: BarcodeScannerProps) {
   const [isScanning, setIsScanning] = useState(false);
   const [error, setError] = useState("");
+  const [barcode, setBarcode] = useState("");
   const scannerRef = useRef<Html5Qrcode | null>(null);
   const cameraIdRef = useRef<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
-    return () => stopScanner(); // Cleanup on unmount
+    return () => stopScanner();
   }, []);
+
+  const handleBarcodeChange = (value: string) => {
+    setBarcode(value);
+    onScan(value);
+  };
 
   const startScanner = async () => {
     setError("");
@@ -43,6 +49,7 @@ export default function BarcodeScanner({ onScan }: BarcodeScannerProps) {
         cameraIdRef.current,
         config,
         (decodedText) => {
+          setBarcode(decodedText);
           onScan(decodedText);
           stopScanner();
         },
@@ -67,13 +74,16 @@ export default function BarcodeScanner({ onScan }: BarcodeScannerProps) {
     setIsScanning(false);
   };
 
-  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
     try {
       const scanner = new Html5Qrcode("scanner-container");
       const result = await scanner.scanFile(file, true);
+      setBarcode(result);
       onScan(result);
     } catch (err) {
       console.error("Image scan error:", err);
@@ -84,33 +94,51 @@ export default function BarcodeScanner({ onScan }: BarcodeScannerProps) {
   };
 
   return (
-    <Stack align="center">
-      {!isScanning ? (
-        <Button onClick={startScanner}>Start Scanner</Button>
-      ) : (
-        <Button color="red" onClick={stopScanner}>
-          Stop Scanner
-        </Button>
-      )}
+    <Stack>
+      {/* Control Panel */}
+      <Box>
 
-      <Button variant="light" onClick={() => fileInputRef.current?.click()}>
-        Upload Image to Scan
-      </Button>
 
-      <input
-        type="file"
-        accept="image/*"
-        ref={fileInputRef}
-        style={{ display: "none" }}
-        onChange={handleFileUpload}
-      />
+        
+        <Stack>
+        <TextInput
+          label="Barcode"
+          placeholder="Enter or scan a barcode"
+          value={barcode}
+          onChange={(e) => handleBarcodeChange(e.currentTarget.value)}
+        />
 
+          <Button onClick={() => onScan(barcode)} disabled={!barcode.trim()}>
+            Search Product
+          </Button>
+
+          <Button
+            onClick={isScanning ? stopScanner : startScanner}
+            color={isScanning ? "red" : "blue"}
+          >
+            {isScanning ? "Stop Scanner" : "Start Scanner"}
+          </Button>
+
+          <Button onClick={() => fileInputRef.current?.click()}>
+            Upload Image to Scan
+          </Button>
+        </Stack>
+
+        <input
+          type="file"
+          accept="image/*"
+          ref={fileInputRef}
+          style={{ display: "none" }}
+          onChange={handleFileUpload}
+        />
+      </Box>
+
+      {/* Scanner Camera Section */}
       <Box
         id="scanner-container"
-        mt="sm"
+        w={600}
+        h={400}
         style={{
-          width: 600,
-          height: 400,
           border: "1px solid #ccc",
           borderRadius: "8px",
           backgroundColor: "#f8f8f8",
