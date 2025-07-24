@@ -29,14 +29,14 @@ namespace SmartPantry.WebApi.Controllers
                 return NotFound("No matching food products found.");
 
             var formattedIngredients = string.Join("\n- ", ingredients);
-
             var prompt =
-                "Using the following ingredients, generate a recipe in **this EXACT JSON format**:\n\n" +
+                "Using the ingredients listed below, generate a recipe in **this EXACT JSON format**:\n\n" +
                 "{\n" +
                 "  \"title\": \"<generated title>\",\n" +
                 "  \"ingredients\": [\"ingredient 1\", \"ingredient 2\", ...],\n" +
                 "  \"instructions\": [\"Step 1:\", \"Step 2:\", \"Step 3:\", ...]\n" +
                 "}\n\n" +
+                "Use only the ingredients provided if possible. Avoid adding other items unless absolutely necessary for a complete recipe.\n\n" +
                 "Ingredients:\n- " + formattedIngredients;
 
             var recipe = await _geminiService.GetGeminiResponse(prompt);

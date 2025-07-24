@@ -1,4 +1,4 @@
-export type Product = {
+export type ProductAdd = {
   barcode: string;
   productName: string;
   quantity: string;
@@ -8,7 +8,6 @@ export type Product = {
 
 export type ProductResponse = {
   id: string;
-  barcode: string;
   productName: string;
   quantity: string;
   brands: string;

@@ -14,7 +14,6 @@ export default function ProductTable({ products, selectedIds, onToggleSelect }: 
         <Table.Tr>
           <Table.Th>Select</Table.Th>
           <Table.Th>Product Name</Table.Th>
-          <Table.Th>Barcode</Table.Th>
           <Table.Th>Quantity</Table.Th>
           <Table.Th>Brands</Table.Th>
           <Table.Th>Categories</Table.Th>
@@ -30,7 +29,6 @@ export default function ProductTable({ products, selectedIds, onToggleSelect }: 
               />
             </Table.Td>
             <Table.Td>{p.productName}</Table.Td>
-            <Table.Td>{p.barcode}</Table.Td>
             <Table.Td>{p.quantity}</Table.Td>
             <Table.Td>{p.brands}</Table.Td>
             <Table.Td>{p.categories}</Table.Td>

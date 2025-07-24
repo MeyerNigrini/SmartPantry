@@ -38,7 +38,6 @@ namespace SmartPantry.Services.Services
             return entities.Select(p => new FoodProductResponseDTO
             {
                 Id = p.Id,
-                Barcode = p.Barcode,
                 ProductName = p.ProductName,
                 Quantity = p.Quantity,
                 Brands = p.Brands,

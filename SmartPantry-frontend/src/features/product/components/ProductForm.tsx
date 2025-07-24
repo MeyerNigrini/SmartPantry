@@ -1,13 +1,13 @@
 import { Stack, TextInput } from '@mantine/core';
-import type { Product } from '../types/productTypes';
+import type { ProductAdd } from '../types/productTypes';
 
 type Props = {
-  product: Product;
-  onChange: (product: Product) => void;
+  product: ProductAdd;
+  onChange: (product: ProductAdd) => void;
 };
 
 export default function ProductForm({ product, onChange }: Props) {
-  const handleChange = (key: keyof Product, value: string) => {
+  const handleChange = (key: keyof ProductAdd, value: string) => {
     onChange({ ...product, [key]: value });
   };
 

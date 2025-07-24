@@ -1,8 +1,8 @@
-import type { Product, ProductResponse } from '../types/productTypes';
+import type { ProductAdd, ProductResponse } from '../types/productTypes';
 import api from '../../../lib/api';
 
 // GET product details from OpenFoodFacts
-export async function fetchProductByBarcode(barcode: string): Promise<Product> {
+export async function fetchProductByBarcode(barcode: string): Promise<ProductAdd> {
   const res = await api.get(`/OpenFoodFacts/${barcode}`);
   const raw = res.data;
 
@@ -16,7 +16,7 @@ export async function fetchProductByBarcode(barcode: string): Promise<Product> {
 }
 
 // POST product to backend
-export async function saveProduct(product: Product): Promise<void> {
+export async function saveProduct(product: ProductAdd): Promise<void> {
   const dto = {
     barcode: product.barcode,
     productName: product.productName,
@@ -32,4 +32,3 @@ export const getAllUserProducts = async (): Promise<ProductResponse[]> => {
   const res = await api.get('/FoodProduct/getAllForUser');
   return res.data;
 };
-

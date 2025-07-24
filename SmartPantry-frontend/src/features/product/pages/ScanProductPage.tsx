@@ -3,11 +3,11 @@ import { Title, Stack, Text, Notification, Button } from '@mantine/core';
 import BarcodeScanner from '../../../components/BarcodeScanner';
 import ProductForm from '../components/ProductForm';
 import { fetchProductByBarcode, saveProduct } from '../services/productService';
-import type { Product } from '../types/productTypes';
+import type { ProductAdd } from '../types/productTypes';
 
 export default function ScanProductPage() {
   const [scannedValue, setScannedValue] = useState<string | null>(null);
-  const [product, setProduct] = useState<Product>({
+  const [product, setProduct] = useState<ProductAdd>({
     barcode: '',
     productName: '',
     quantity: '',

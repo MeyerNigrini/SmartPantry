@@ -3,6 +3,12 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { register } from '../services/authService';
 
+/**
+ * RegisterPage Component
+ *
+ * Allows a new user to sign up with their personal details and credentials.
+ * On successful registration, redirects to the login page.
+ */
 export default function RegisterPage() {
   const navigate = useNavigate();
 
@@ -14,18 +20,28 @@ export default function RegisterPage() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
 
-  // Handle register form submission
+  /**
+   * Handle registration form submission
+   *
+   * Validates password match before calling API.
+   * On success, redirects to login page.
+   * On failure, displays appropriate error message.
+   */
   const handleRegister = async () => {
     setError('');
 
+    // Ensure user confirms their password correctly
     if (password !== confirmPassword) {
       setError("Passwords don't match");
       return;
     }
 
     try {
+      // Attempt to register the user with backend API
       await register({ firstName, lastName, email, password });
-      navigate('/'); // Redirect to login on success
+
+      // On success, redirect user to login page
+      navigate('/');
     } catch (err: unknown) {
       if (err && typeof err === 'object' && 'response' in err) {
         const errorTyped = err as {
