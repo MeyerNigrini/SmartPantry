@@ -1,4 +1,4 @@
-import type { Product } from '../types/productTypes';
+import type { Product, ProductResponse } from '../types/productTypes';
 import api from '../../../lib/api';
 
 // GET product details from OpenFoodFacts
@@ -26,3 +26,10 @@ export async function saveProduct(product: Product): Promise<void> {
   };
   await api.post('/FoodProduct', dto);
 }
+
+// GET all products of a user
+export const getAllUserProducts = async (): Promise<ProductResponse[]> => {
+  const res = await api.get('/FoodProduct/getAllForUser');
+  return res.data;
+};
+
