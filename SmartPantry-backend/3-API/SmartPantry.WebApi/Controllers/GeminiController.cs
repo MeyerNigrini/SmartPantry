@@ -18,22 +18,15 @@ namespace SmartPantry.WebApi.Controllers
 
         [HttpPost("recipes")]
         [Authorize]
-        public async Task<IActionResult> Ask()
+        public async Task<IActionResult> Ask([FromBody] List<Guid> selectedIds)
         {
-            // Replace with actual data from DB
-            string[] ingredients = new[]
-            {
-                "Rice noodles",
-                "Peanut",
-                "Soy protein",
-                "Green onions",
-                "Chickpeas",
-                "Sesame oil",
-                "Chili",
-                "Cumin",
-                "Clove",
-                "Citric acid"
-            };
+            if (selectedIds == null || !selectedIds.Any())
+                return BadRequest("No ingredient IDs provided.");
+
+            var ingredients = await _geminiService.GetIngredientsFromFoodProducts(selectedIds);
+
+            if (!ingredients.Any())
+                return NotFound("No matching food products found.");
 
             var formattedIngredients = string.Join("\n- ", ingredients);
 

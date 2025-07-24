@@ -1,11 +1,9 @@
-﻿using System.Net.Http;
-using System.Text;
+﻿using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using SmartPantry.Core.Interfaces.Services;
-using SmartPantry.Core.DTOs;
+using SmartPantry.Core.Interfaces.Repositories;
 
 namespace SmartPantry.Services.External
 {
@@ -13,12 +11,15 @@ namespace SmartPantry.Services.External
     {
         private readonly HttpClient _httpClient;
         private readonly ILogger<GeminiService> _logger;
+        private readonly IFoodProductRepository _foodProductRepository;
         private readonly string _geminiEndpoint;
 
-        public GeminiService(HttpClient httpClient, IConfiguration config, ILogger<GeminiService> logger)
+
+        public GeminiService(HttpClient httpClient, IConfiguration config, ILogger<GeminiService> logger, IFoodProductRepository foodProductRepository)
         {
             _httpClient = httpClient;
             _logger = logger;
+            _foodProductRepository = foodProductRepository;
 
             var apiKey = config["Gemini:ApiKey"];
 
@@ -29,6 +30,23 @@ namespace SmartPantry.Services.External
             }
 
             _geminiEndpoint = $"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={apiKey}";
+        }
+
+        public async Task<List<string>> GetIngredientsFromFoodProducts(List<Guid> productIds)
+        {
+            try
+            {
+                var products = await _foodProductRepository.GetByIdsAsync(productIds);
+
+                return products.Select(p =>
+                    $"{p.ProductName} - {p.Quantity} - {p.Brands} - {p.Categories}"
+                ).ToList();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to fetch food products for recipe prompt.");
+                throw;
+            }
         }
 
         public async Task<string> GetGeminiResponse(string prompt)

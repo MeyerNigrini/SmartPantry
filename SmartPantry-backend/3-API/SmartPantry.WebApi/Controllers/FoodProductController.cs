@@ -28,7 +28,7 @@ namespace SmartPantry.WebApi.Controllers
             return Ok(new { message = "Food product saved successfully" });
         }
 
-        [HttpGet]
+        [HttpGet("getAllForUser")]
         public async Task<ActionResult<IEnumerable<FoodProductResponseDTO>>> GetAllFoodProducts()
         {
             var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);

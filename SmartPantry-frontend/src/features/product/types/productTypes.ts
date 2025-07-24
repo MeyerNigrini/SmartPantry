@@ -15,3 +15,9 @@ export type ProductResponse = {
   categories: string;
   addedDate: string;
 };
+
+export type Recipe = {
+  title: string;
+  ingredients: string[];
+  instructions: string[];
+};

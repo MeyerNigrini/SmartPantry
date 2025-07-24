@@ -26,5 +26,13 @@ namespace SmartPantry.DataAccess.Repositories
                                  .Where(p => p.UserID == userId)
                                  .ToListAsync();
         }
+
+        public async Task<List<FoodProductEntity>> GetByIdsAsync(List<Guid> ids)
+        {
+            return await _context.FoodProducts
+                .Where(p => ids.Contains(p.Id))
+                .ToListAsync();
+        }
+
     }
 }

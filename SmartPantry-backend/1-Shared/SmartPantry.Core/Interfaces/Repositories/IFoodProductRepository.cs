@@ -6,5 +6,7 @@ namespace SmartPantry.Core.Interfaces.Repositories
     {
         Task AddAsync(FoodProductEntity product);
         Task<List<FoodProductEntity>> GetByUserIdAsync(Guid userId);
+        Task<List<FoodProductEntity>> GetByIdsAsync(List<Guid> ids);
+
     }
 }
