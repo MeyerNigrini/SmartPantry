@@ -9,7 +9,6 @@
 *.sln.docstates
 
 # Ignore Visual Studio Code settings
-.vscode/
 .vs/
 
 # Ignore build results

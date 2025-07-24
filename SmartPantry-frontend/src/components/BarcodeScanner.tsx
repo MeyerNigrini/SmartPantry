@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState } from "react";
-import { Html5Qrcode } from "html5-qrcode";
-import { Box, Button, Stack, Text, TextInput } from "@mantine/core";
+import { useEffect, useRef, useState } from 'react';
+import { Html5Qrcode } from 'html5-qrcode';
+import { Box, Button, Stack, Text, TextInput } from '@mantine/core';
 
 type BarcodeScannerProps = {
   onScan: (decodedText: string) => void;
@@ -8,8 +8,8 @@ type BarcodeScannerProps = {
 
 export default function BarcodeScanner({ onScan }: BarcodeScannerProps) {
   const [isScanning, setIsScanning] = useState(false);
-  const [error, setError] = useState("");
-  const [barcode, setBarcode] = useState("");
+  const [error, setError] = useState('');
+  const [barcode, setBarcode] = useState('');
   const scannerRef = useRef<Html5Qrcode | null>(null);
   const cameraIdRef = useRef<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -24,13 +24,13 @@ export default function BarcodeScanner({ onScan }: BarcodeScannerProps) {
   };
 
   const startScanner = async () => {
-    setError("");
+    setError('');
     setIsScanning(true);
 
     try {
       const devices = await Html5Qrcode.getCameras();
       if (!devices.length) {
-        setError("No cameras found.");
+        setError('No cameras found.');
         return;
       }
 
@@ -39,10 +39,10 @@ export default function BarcodeScanner({ onScan }: BarcodeScannerProps) {
       const config = {
         fps: 10,
         qrbox: { width: 500, height: 250 },
-        formatsToSupport: ["EAN_13", "UPC_A", "CODE_128", "QR_CODE"],
+        formatsToSupport: ['EAN_13', 'UPC_A', 'CODE_128', 'QR_CODE'],
       };
 
-      const scanner = new Html5Qrcode("scanner-container");
+      const scanner = new Html5Qrcode('scanner-container');
       scannerRef.current = scanner;
 
       await scanner.start(
@@ -54,12 +54,12 @@ export default function BarcodeScanner({ onScan }: BarcodeScannerProps) {
           stopScanner();
         },
         (err) => {
-          console.warn("Scan attempt failed:", err);
-        }
+          console.warn('Scan attempt failed:', err);
+        },
       );
     } catch (err) {
-      console.error("Error starting scanner:", err);
-      setError("Failed to start scanner.");
+      console.error('Error starting scanner:', err);
+      setError('Failed to start scanner.');
       setIsScanning(false);
     }
   };
@@ -74,22 +74,20 @@ export default function BarcodeScanner({ onScan }: BarcodeScannerProps) {
     setIsScanning(false);
   };
 
-  const handleFileUpload = async (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
     try {
-      const scanner = new Html5Qrcode("scanner-container");
+      const scanner = new Html5Qrcode('scanner-container');
       const result = await scanner.scanFile(file, true);
       setBarcode(result);
       onScan(result);
     } catch (err) {
-      console.error("Image scan error:", err);
-      setError("Failed to scan image.");
+      console.error('Image scan error:', err);
+      setError('Failed to scan image.');
     } finally {
-      event.target.value = ""; // allow same file re-upload
+      event.target.value = ''; // allow same file re-upload
     }
   };
 
@@ -97,16 +95,13 @@ export default function BarcodeScanner({ onScan }: BarcodeScannerProps) {
     <Stack>
       {/* Control Panel */}
       <Box>
-
-
-        
         <Stack>
-        <TextInput
-          label="Barcode"
-          placeholder="Enter or scan a barcode"
-          value={barcode}
-          onChange={(e) => handleBarcodeChange(e.currentTarget.value)}
-        />
+          <TextInput
+            label="Barcode"
+            placeholder="Enter or scan a barcode"
+            value={barcode}
+            onChange={(e) => handleBarcodeChange(e.currentTarget.value)}
+          />
 
           <Button onClick={() => onScan(barcode)} disabled={!barcode.trim()}>
             Search Product
@@ -114,21 +109,19 @@ export default function BarcodeScanner({ onScan }: BarcodeScannerProps) {
 
           <Button
             onClick={isScanning ? stopScanner : startScanner}
-            color={isScanning ? "red" : "blue"}
+            color={isScanning ? 'red' : 'blue'}
           >
-            {isScanning ? "Stop Scanner" : "Start Scanner"}
+            {isScanning ? 'Stop Scanner' : 'Start Scanner'}
           </Button>
 
-          <Button onClick={() => fileInputRef.current?.click()}>
-            Upload Image to Scan
-          </Button>
+          <Button onClick={() => fileInputRef.current?.click()}>Upload Image to Scan</Button>
         </Stack>
 
         <input
           type="file"
           accept="image/*"
           ref={fileInputRef}
-          style={{ display: "none" }}
+          style={{ display: 'none' }}
           onChange={handleFileUpload}
         />
       </Box>
@@ -139,10 +132,10 @@ export default function BarcodeScanner({ onScan }: BarcodeScannerProps) {
         w={600}
         h={400}
         style={{
-          border: "1px solid #ccc",
-          borderRadius: "8px",
-          backgroundColor: "#f8f8f8",
-          overflow: "hidden",
+          border: '1px solid #ccc',
+          borderRadius: '8px',
+          backgroundColor: '#f8f8f8',
+          overflow: 'hidden',
         }}
       />
 

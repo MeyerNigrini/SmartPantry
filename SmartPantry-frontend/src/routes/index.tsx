@@ -1,11 +1,11 @@
 // Declares app routes
-import { Route, Routes } from "react-router-dom";
-import LoginPage from "../features/auth/pages/LoginPage";
-import HomePage from "../features/home/pages/HomePage";
-import ScanProductPage from "../features/product/pages/ScanProductPage";
-import RegisterPage from "../features/auth/pages/RegisterPage";
-import ProtectedRoute from "./ProtectedRoute";
-import Layout from "../components/Layout";
+import { Route, Routes } from 'react-router-dom';
+import LoginPage from '../features/auth/pages/LoginPage';
+import HomePage from '../features/home/pages/HomePage';
+import ScanProductPage from '../features/product/pages/ScanProductPage';
+import RegisterPage from '../features/auth/pages/RegisterPage';
+import ProtectedRoute from './ProtectedRoute';
+import Layout from '../components/Layout';
 
 export default function AppRoutes() {
   return (
