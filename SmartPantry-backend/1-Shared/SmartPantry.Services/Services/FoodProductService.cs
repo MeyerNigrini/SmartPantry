@@ -14,7 +14,7 @@ namespace SmartPantry.Services.Services
             _repository = repository;
         }
 
-        public async Task AddFoodProductAsync(FoodProductCreateDTO dto, Guid userId)
+        public async Task AddFoodProductAsync(FoodProductAddDTO dto, Guid userId)
         {
             var entity = new FoodProductEntity
             {
@@ -29,6 +29,22 @@ namespace SmartPantry.Services.Services
             };
 
             await _repository.AddAsync(entity);
+        }
+
+        public async Task<IEnumerable<FoodProductResponseDTO>> GetAllFoodProductsAsync(Guid userId)
+        {
+            var entities = await _repository.GetByUserIdAsync(userId);
+
+            return entities.Select(p => new FoodProductResponseDTO
+            {
+                Id = p.Id,
+                Barcode = p.Barcode,
+                ProductName = p.ProductName,
+                Quantity = p.Quantity,
+                Brands = p.Brands,
+                Categories = p.Categories,
+                AddedDate = p.AddedDate
+            });
         }
     }
 }

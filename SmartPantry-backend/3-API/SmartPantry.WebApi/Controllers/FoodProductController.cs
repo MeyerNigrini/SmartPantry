@@ -16,8 +16,8 @@ namespace SmartPantry.WebApi.Controllers
             _service = service;
         }
 
-        [HttpPost]
-        public async Task<IActionResult> CreateFoodProduct([FromBody] FoodProductCreateDTO dto)
+        [HttpPost("addFoodProduct")]
+        public async Task<IActionResult> AddFoodProduct([FromBody] FoodProductAddDTO dto)
         {
             var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -26,6 +26,18 @@ namespace SmartPantry.WebApi.Controllers
 
             await _service.AddFoodProductAsync(dto, userId);
             return Ok(new { message = "Food product saved successfully" });
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<FoodProductResponseDTO>>> GetAllFoodProducts()
+        {
+            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (string.IsNullOrEmpty(userIdString) || !Guid.TryParse(userIdString, out var userId))
+                return Unauthorized();
+
+            var products = await _service.GetAllFoodProductsAsync(userId);
+            return Ok(products);
         }
     }
 }

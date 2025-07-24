@@ -1,17 +1,13 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace SmartPantry.Core.DTOs.FoodProduct
+﻿namespace SmartPantry.Core.DTOs.FoodProduct
 {
-    public class FoodProductCreateDTO
+    public class FoodProductResponseDTO
     {
-        [Required]
+        public Guid Id { get; set; }
         public string Barcode { get; set; }
-        [Required]
         public string ProductName { get; set; }
-        [Required]
         public string Quantity { get; set; }
-        [Required]
         public string Brands { get; set; }
         public string Categories { get; set; }
+        public DateTime AddedDate { get; set; }
     }
 }
