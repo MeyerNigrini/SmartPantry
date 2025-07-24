@@ -14,9 +14,14 @@ export default function ProductForm({ product, onChange }: Props) {
   return (
     <Stack>
       <TextInput
+        label="Barcode"
+        value={product.barcode}
+        onChange={(e) => handleChange('barcode', e.currentTarget.value)}
+      />
+      <TextInput
         label="Product Name"
-        value={product.name}
-        onChange={(e) => handleChange('name', e.currentTarget.value)}
+        value={product.productName}
+        onChange={(e) => handleChange('productName', e.currentTarget.value)}
       />
       <TextInput
         label="Quantity"

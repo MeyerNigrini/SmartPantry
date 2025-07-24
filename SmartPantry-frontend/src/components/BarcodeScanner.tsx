@@ -53,8 +53,10 @@ export default function BarcodeScanner({ onScan }: BarcodeScannerProps) {
           onScan(decodedText);
           stopScanner();
         },
-        (err) => {
-          console.warn('Scan attempt failed:', err);
+        (err: unknown) => {
+          if (err instanceof Error && err.name !== 'NotFoundException') {
+            console.warn('Scan error:', err);
+          }
         },
       );
     } catch (err) {

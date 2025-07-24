@@ -1,20 +1,22 @@
 import { useEffect, useState } from 'react';
-import { Title, Stack, Text, Notification } from '@mantine/core';
+import { Title, Stack, Text, Notification, Button } from '@mantine/core';
 import BarcodeScanner from '../../../components/BarcodeScanner';
 import ProductForm from '../components/ProductForm';
-import { fetchProductByBarcode } from '../services/openFoodFactsService';
+import { fetchProductByBarcode, saveProduct } from '../services/productService';
 import type { Product } from '../types/productTypes';
 
 export default function ScanProductPage() {
   const [scannedValue, setScannedValue] = useState<string | null>(null);
   const [product, setProduct] = useState<Product>({
-    name: '',
+    barcode: '',
+    productName: '',
     quantity: '',
     brands: '',
     categories: '',
   });
   const [notFound, setNotFound] = useState(false);
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
 
   useEffect(() => {
     if (!scannedValue) return;
@@ -27,7 +29,13 @@ export default function ScanProductPage() {
         setError('');
       } catch (err: unknown) {
         setNotFound(true);
-        setProduct({ name: '', quantity: '', brands: '', categories: '' });
+        setProduct({
+          barcode: scannedValue,
+          productName: '',
+          quantity: '',
+          brands: '',
+          categories: '',
+        });
 
         if (err instanceof Error) {
           setError(err.message); // message: "Product not found" or "Failed to fetch product"
@@ -39,6 +47,20 @@ export default function ScanProductPage() {
 
     loadProduct();
   }, [scannedValue]);
+
+  const handleSave = async () => {
+    console.log('Payload to be sent:', product);
+
+    try {
+      await saveProduct(product);
+      setSuccess('Product saved successfully');
+      setError('');
+    } catch (err) {
+      console.error(err);
+      setError('Failed to save product');
+      setSuccess('');
+    }
+  };
 
   return (
     <Stack>
@@ -54,7 +76,17 @@ export default function ScanProductPage() {
         </Notification>
       )}
 
+      {success && (
+        <Notification color="green" withCloseButton onClose={() => setSuccess('')}>
+          {success}
+        </Notification>
+      )}
+
       <ProductForm product={product} onChange={setProduct} />
+
+      <Button onClick={handleSave} disabled={!product.productName}>
+        Save Product
+      </Button>
     </Stack>
   );
 }

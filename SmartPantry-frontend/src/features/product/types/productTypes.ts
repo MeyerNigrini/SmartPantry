@@ -1,5 +1,6 @@
 export type Product = {
-  name: string;
+  barcode: string;
+  productName: string;
   quantity: string;
   brands: string;
   categories: string;
