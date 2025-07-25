@@ -16,7 +16,7 @@ export async function fetchProductByBarcode(barcode: string): Promise<ProductAdd
 }
 
 // POST product to backend
-export async function saveProduct(product: ProductAdd): Promise<void> {
+export async function AddFoodProductForUser(product: ProductAdd): Promise<void> {
   const dto = {
     barcode: product.barcode,
     productName: product.productName,
@@ -24,11 +24,11 @@ export async function saveProduct(product: ProductAdd): Promise<void> {
     brands: product.brands,
     categories: product.categories,
   };
-  await api.post('/FoodProduct/addFoodProduct', dto);
+  await api.post('/FoodProduct/addFoodProductForUser', dto);
 }
 
 // GET all products of a user
-export const getAllUserProducts = async (): Promise<ProductResponse[]> => {
-  const res = await api.get('/FoodProduct/getAllForUser');
+export const GetAllFoodProductsForUser = async (): Promise<ProductResponse[]> => {
+  const res = await api.get('/FoodProduct/getAllFoodProductsForUser');
   return res.data;
 };

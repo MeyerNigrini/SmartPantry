@@ -1,20 +1,18 @@
 import { useState } from 'react';
-import {
-  Title,
-  Stack,
-  Text,
-  Notification,
-  Button,
-  TextInput,
-  Group,
-} from '@mantine/core';
+import { Title, Stack, Text, Button, TextInput, Group } from '@mantine/core';
 import BarcodeScanner from '../components/BarcodeScanner';
 import ProductForm from '../components/ProductForm';
-import { fetchProductByBarcode, saveProduct } from '../services/productService';
+import { fetchProductByBarcode, AddFoodProductForUser } from '../services/productService';
 import type { ProductAdd } from '../types/productTypes';
+
+// Notification helpers
+import { showCustomNotification } from '../../../components/CustomNotification';
+import { getErrorMessage } from '../../../utils/errorHelpers';
 
 export default function ScanProductPage() {
   const [barcode, setBarcode] = useState('');
+  const [notFound, setNotFound] = useState(false);
+
   const [product, setProduct] = useState<ProductAdd>({
     barcode: '',
     productName: '',
@@ -22,9 +20,6 @@ export default function ScanProductPage() {
     brands: '',
     categories: '',
   });
-  const [notFound, setNotFound] = useState(false);
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
 
   const handleScan = (scanned: string) => {
     setBarcode(scanned);
@@ -38,8 +33,7 @@ export default function ScanProductPage() {
       const data = await fetchProductByBarcode(code);
       setProduct(data);
       setNotFound(false);
-      setError('');
-    } catch (err: unknown) {
+    } catch (err) {
       setNotFound(true);
       setProduct({
         barcode: code,
@@ -49,23 +43,27 @@ export default function ScanProductPage() {
         categories: '',
       });
 
-      if (err instanceof Error) {
-        setError(err.message);
-      } else {
-        setError('Something went wrong');
-      }
+      showCustomNotification({
+        message: getErrorMessage(err, 'Product not found or lookup failed.'),
+        type: 'error',
+      });
     }
   };
 
   const handleSave = async () => {
     try {
-      await saveProduct(product);
-      setSuccess('Product saved successfully');
-      setError('');
+      await AddFoodProductForUser(product);
+
+      showCustomNotification({
+        message: 'Product saved successfully!',
+        type: 'success',
+      });
     } catch (err) {
       console.error(err);
-      setError('Failed to save product');
-      setSuccess('');
+      showCustomNotification({
+        message: getErrorMessage(err, 'Failed to save product.'),
+        type: 'error',
+      });
     }
   };
 
@@ -87,17 +85,9 @@ export default function ScanProductPage() {
 
       {notFound && <Text color="red">Product not found. Please enter the details manually.</Text>}
 
-      {error && (
-        <Notification color="red" withCloseButton onClose={() => setError('')}>
-          {error}
-        </Notification>
-      )}
 
-      {success && (
-        <Notification color="green" withCloseButton onClose={() => setSuccess('')}>
-          {success}
-        </Notification>
-      )}
+
+
 
       <ProductForm product={product} onChange={setProduct} />
 

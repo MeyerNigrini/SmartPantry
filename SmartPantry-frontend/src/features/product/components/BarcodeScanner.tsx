@@ -1,15 +1,15 @@
 import { useEffect, useRef, useState } from 'react';
 import { Html5Qrcode } from 'html5-qrcode';
-import { Box, Button, Stack, Text } from '@mantine/core';
+import { Box, Button, Stack } from '@mantine/core';
+import { showCustomNotification } from '../../../components/CustomNotification';
 
 type BarcodeScannerProps = {
   onScan: (decodedText: string) => void;
 };
 
 export default function BarcodeScanner({ onScan }: BarcodeScannerProps) {
-  // State for managing scanner status and results
+  // State for managing scanner status
   const [isScanning, setIsScanning] = useState(false);
-  const [error, setError] = useState('');
 
   // Refs for scanner instance and device/camera
   const scannerRef = useRef<Html5Qrcode | null>(null);
@@ -23,13 +23,16 @@ export default function BarcodeScanner({ onScan }: BarcodeScannerProps) {
 
   // Starts the live camera scanner
   const startScanner = async () => {
-    setError('');
     setIsScanning(true);
 
     try {
       const devices = await Html5Qrcode.getCameras();
       if (!devices.length) {
-        setError('No cameras found.');
+        showCustomNotification({
+          message: 'No cameras found.',
+          type: 'error',
+        });
+        setIsScanning(false);
         return;
       }
 
@@ -60,7 +63,10 @@ export default function BarcodeScanner({ onScan }: BarcodeScannerProps) {
       );
     } catch (err) {
       console.error('Error starting scanner:', err);
-      setError('Failed to start scanner.');
+      showCustomNotification({
+        message: 'Failed to start scanner.',
+        type: 'error',
+      });
       setIsScanning(false);
     }
   };
@@ -87,7 +93,10 @@ export default function BarcodeScanner({ onScan }: BarcodeScannerProps) {
       onScan(result);
     } catch (err) {
       console.error('Image scan error:', err);
-      setError('Failed to scan image.');
+      showCustomNotification({
+        message: 'Failed to scan image.',
+        type: 'error',
+      });
     } finally {
       event.target.value = ''; // allow same file re-upload
     }
@@ -134,9 +143,6 @@ export default function BarcodeScanner({ onScan }: BarcodeScannerProps) {
           overflow: 'hidden',
         }}
       />
-
-      {/* Error message displayed if any issue occurs */}
-      {error && <Text color="red">{error}</Text>}
     </Stack>
   );
 }

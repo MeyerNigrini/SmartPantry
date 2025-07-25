@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
 import { Container, Title, Loader, Center, Stack, Button, Text } from '@mantine/core';
-import { getAllUserProducts } from '../services/productService';
+import { GetAllFoodProductsForUser } from '../services/productService';
 import ProductTable from '../components/ProductTable';
 import type { ProductResponse, Recipe } from '../types/productTypes';
 import { getRecipeFromGemini } from '../services/geminiService';
+import { showCustomNotification } from '../../../components/CustomNotification';
+import { getErrorMessage } from '../../../utils/errorHelpers';
 
 export default function ProductListPage() {
   const [products, setProducts] = useState<ProductResponse[]>([]);
@@ -14,9 +16,16 @@ export default function ProductListPage() {
   const [loadingRecipe, setLoadingRecipe] = useState(false);
 
   useEffect(() => {
-    getAllUserProducts()
-      .then(setProducts)
-      .catch((err) => console.error('Failed to load products', err))
+    GetAllFoodProductsForUser()
+      .then((data) => {
+        setProducts(data);
+      })
+      .catch((err) => {
+        showCustomNotification({
+          message: getErrorMessage(err, 'Failed to load your products.'),
+          type: 'error',
+        });
+      })
       .finally(() => setLoading(false));
   }, []);
 
@@ -30,7 +39,10 @@ export default function ProductListPage() {
       const result = await getRecipeFromGemini(selectedIds);
       setRecipe(result);
     } catch (err) {
-      console.error('Failed to get recipe', err);
+      showCustomNotification({
+        message: getErrorMessage(err, 'Could not generate recipe.'),
+        type: 'error',
+      });
     } finally {
       setLoadingRecipe(false);
     }

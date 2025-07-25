@@ -1,8 +1,11 @@
-import { TextInput, PasswordInput, Button, Paper, Title, Stack, Notification } from '@mantine/core';
+import { TextInput, PasswordInput, Button, Paper, Title, Stack } from '@mantine/core';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { register } from '../services/authService';
 
+// Notification helpers
+import { showCustomNotification } from '../../../components/CustomNotification';
+import { getErrorMessage } from '../../../utils/errorHelpers';
 /**
  * RegisterPage Component
  *
@@ -18,7 +21,8 @@ export default function RegisterPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [error, setError] = useState('');
+
+  const [submitting, setSubmitting] = useState(false);
 
   /**
    * Handle registration form submission
@@ -28,11 +32,15 @@ export default function RegisterPage() {
    * On failure, displays appropriate error message.
    */
   const handleRegister = async () => {
-    setError('');
+    setSubmitting(true);
 
     // Ensure user confirms their password correctly
     if (password !== confirmPassword) {
-      setError("Passwords don't match");
+      showCustomNotification({
+        message: "Passwords don't match",
+        type: 'error',
+      });
+      setSubmitting(false);
       return;
     }
 
@@ -40,17 +48,20 @@ export default function RegisterPage() {
       // Attempt to register the user with backend API
       await register({ firstName, lastName, email, password });
 
+      showCustomNotification({
+        message: 'Registration successful! Please log in.',
+        type: 'success',
+      });
+
       // On success, redirect user to login page
       navigate('/');
-    } catch (err: unknown) {
-      if (err && typeof err === 'object' && 'response' in err) {
-        const errorTyped = err as {
-          response?: { data?: { message?: string } };
-        };
-        setError(errorTyped.response?.data?.message || 'Registration failed');
-      } else {
-        setError('Registration failed');
-      }
+    } catch (err) {
+      showCustomNotification({
+        message: getErrorMessage(err, 'Registration failed. Please try again.'),
+        type: 'error',
+      });
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -81,15 +92,9 @@ export default function RegisterPage() {
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.currentTarget.value)}
         />
-        <Button fullWidth onClick={handleRegister}>
+        <Button fullWidth loading={submitting} disabled={submitting} onClick={handleRegister}>
           Register
         </Button>
-
-        {error && (
-          <Notification color="red" mt="md">
-            {error}
-          </Notification>
-        )}
       </Stack>
     </Paper>
   );
