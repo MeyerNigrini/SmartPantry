@@ -37,13 +37,23 @@ namespace SmartPantry.WebApi.Controllers
             try
             {
                 var result = await _userService.RegisterUserAsync(request);
-                _logger.LogInformation("New user registered: {Email}", result.Email);
-                return Ok(result); // Returns 200 OK with user details
+                _logger.LogInformation("New user registered successfully: {Email}", result.Email);
+                return Ok(result);
+            }
+            catch (InvalidInputException ex)
+            {
+                _logger.LogWarning(ex, "Invalid input during user registration.");
+                return BadRequest(new { message = ex.Message });
             }
             catch (UserAlreadyExistsException ex)
             {
-                _logger.LogWarning(ex, "Registration failed: {Message}", ex.Message);
-                return Conflict(new { message = ex.Message }); // Returns 409 Conflict if user exists
+                _logger.LogWarning(ex, "User registration failed, user already exists.");
+                return Conflict(new { message = ex.Message });
+            }
+            catch (PersistenceException ex)
+            {
+                _logger.LogError(ex, "Database error during user registration.");
+                return StatusCode(500, new { message = "Failed to register user." });
             }
             catch (Exception ex)
             {
@@ -64,12 +74,17 @@ namespace SmartPantry.WebApi.Controllers
             {
                 var result = await _userService.LoginAsync(request);
                 _logger.LogInformation("User {Email} logged in successfully.", result.Email);
-                return Ok(result); // Returns 200 OK with user details and token
+                return Ok(result);
+            }
+            catch (InvalidInputException ex)
+            {
+                _logger.LogWarning(ex, "Invalid login input.");
+                return BadRequest(new { message = ex.Message });
             }
             catch (SmartPantryException ex)
             {
-                _logger.LogWarning(ex, "Login failed: {Message}", ex.Message);
-                return Unauthorized(new { message = ex.Message }); // Returns 401 Unauthorized on invalid login
+                _logger.LogWarning(ex, "Login failed for email {Email}.", request.Email);
+                return Unauthorized(new { message = ex.Message });
             }
             catch (Exception ex)
             {

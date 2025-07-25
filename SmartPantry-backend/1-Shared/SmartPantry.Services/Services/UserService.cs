@@ -41,42 +41,49 @@ namespace SmartPantry.Services.Services
         /// <inheritdoc/>
         public async Task<RegisterUserResponseDTO> RegisterUserAsync(RegisterUserRequestDTO request)
         {
-            // Trimming of input fields
             request.FirstName = request.FirstName?.Trim();
             request.LastName = request.LastName?.Trim();
             request.Email = request.Email?.Trim();
 
+            if (string.IsNullOrWhiteSpace(request.Email) || string.IsNullOrWhiteSpace(request.Password))
+                throw new InvalidInputException("Email and password are required.");
+
             _logger.LogInformation("Attempting to register user with email {Email}", request.Email);
 
-            var existingUser = await _userRepository.GetUserByEmailAsync(request.Email);
-            if (existingUser != null)
+            try
             {
-                throw new UserAlreadyExistsException(request.Email);
+                var existingUser = await _userRepository.GetUserByEmailAsync(request.Email);
+                if (existingUser != null)
+                    throw new UserAlreadyExistsException(request.Email);
+
+                var hashedPassword = _passwordService.HashPassword(request.Password);
+
+                var user = new UserEntity
+                {
+                    Id = Guid.NewGuid(),
+                    FirstName = request.FirstName,
+                    LastName = request.LastName,
+                    Email = request.Email,
+                    PasswordHash = hashedPassword,
+                    CreateDate = DateTime.UtcNow
+                };
+
+                await _userRepository.AddUserAsync(user);
+                _logger.LogInformation("User with email {Email} registered successfully.", user.Email);
+
+                return new RegisterUserResponseDTO
+                {
+                    Id = user.Id,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Email = user.Email
+                };
             }
-
-            var hashedPassword = _passwordService.HashPassword(request.Password);
-
-            var user = new UserEntity
+            catch (Exception ex) when (!(ex is UserAlreadyExistsException))
             {
-                Id = Guid.NewGuid(),
-                FirstName = request.FirstName,
-                LastName = request.LastName,
-                Email = request.Email,
-                PasswordHash = hashedPassword,
-                CreateDate = DateTime.UtcNow
-            };
-
-            await _userRepository.AddUserAsync(user);
-
-            _logger.LogInformation("User with email {Email} registered successfully.", user.Email);
-
-            return new RegisterUserResponseDTO
-            {
-                Id = user.Id,
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                Email = user.Email
-            };
+                _logger.LogError(ex, "Error during user registration for {Email}", request.Email);
+                throw new PersistenceException("Failed to register user.", ex);
+            }
         }
 
         /// <inheritdoc/>
@@ -84,13 +91,37 @@ namespace SmartPantry.Services.Services
         {
             _logger.LogInformation("Attempting login for email {Email}", request.Email);
 
-            var user = await _userRepository.GetUserByEmailAsync(request.Email);
-            if (user == null || !_passwordService.VerifyPassword(request.Password, user.PasswordHash))
+            try
             {
-                _logger.LogWarning("Invalid login attempt for email {Email}", request.Email);
-                throw new SmartPantryException("Invalid email or password.");
-            }
+                var user = await _userRepository.GetUserByEmailAsync(request.Email);
+                if (user == null || !_passwordService.VerifyPassword(request.Password, user.PasswordHash))
+                {
+                    _logger.LogWarning("Invalid login attempt for email {Email}", request.Email);
+                    throw new SmartPantryException("Invalid email or password.");
+                }
 
+                var token = GenerateJwtToken(user);
+
+                _logger.LogInformation("User {Email} logged in successfully.", user.Email);
+
+                return new LoginResponseDTO
+                {
+                    Id = user.Id,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Email = user.Email,
+                    Token = token
+                };
+            }
+            catch (Exception ex) when (!(ex is SmartPantryException))
+            {
+                _logger.LogError(ex, "Error during login for {Email}", request.Email);
+                throw new PersistenceException("Failed to login user.", ex);
+            }
+        }
+
+        private string GenerateJwtToken(UserEntity user)
+        {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.UTF8.GetBytes(_jwtSettings.Key);
 
@@ -108,19 +139,7 @@ namespace SmartPantry.Services.Services
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
 
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            var tokenString = tokenHandler.WriteToken(token);
-
-            _logger.LogInformation("User {Email} logged in successfully.", user.Email);
-
-            return new LoginResponseDTO
-            {
-                Id = user.Id,
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                Email = user.Email,
-                Token = tokenString
-            };
+            return tokenHandler.WriteToken(tokenHandler.CreateToken(tokenDescriptor));
         }
     }
 }
