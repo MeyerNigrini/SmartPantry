@@ -4,7 +4,7 @@ namespace SmartPantry.Core.Interfaces.Services
 {
     public interface IFoodProductService
     {
-        Task AddFoodProductAsync(FoodProductAddDTO dto, Guid userId);
-        Task<IEnumerable<FoodProductResponseDTO>> GetAllFoodProductsAsync(Guid userId);
+        Task AddFoodProductForUserAsync(FoodProductAddDTO dto, Guid userId);
+        Task<IEnumerable<FoodProductResponseDTO>> GetAllFoodProductsForUserAsync(Guid userId);
     }
 }
