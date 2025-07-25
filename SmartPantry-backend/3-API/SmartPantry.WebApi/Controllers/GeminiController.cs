@@ -8,6 +8,7 @@ namespace SmartPantry.WebApi.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class GeminiController : ControllerBase
     {
         private readonly IGeminiService _geminiService;
@@ -25,7 +26,11 @@ namespace SmartPantry.WebApi.Controllers
         /// <param name="selectedIds">The GUIDs of food products to include in the recipe prompt.</param>
         /// <returns>A generated recipe in JSON format.</returns>
         [HttpPost("generate-recipe")]
-        [Authorize]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status502BadGateway)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GenerateRecipeFromSelectedProducts([FromBody] List<Guid> selectedIds)
         {
             try

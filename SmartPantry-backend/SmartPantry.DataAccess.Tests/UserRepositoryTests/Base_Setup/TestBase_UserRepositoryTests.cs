@@ -1,4 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using NUnit.Framework;
 using SmartPantry.DataAccess.Contexts;
 using SmartPantry.DataAccess.Repositories;
@@ -12,6 +14,7 @@ namespace SmartPantry.DataAccess.Tests.UserRepositoryTests.Base_Setup
     {
         protected SmartPantryDbContext _context;
         protected UserRepository _userRepository;
+        protected ILogger<UserRepository> _logger = null!;
 
         [SetUp]
         public void BaseSetup()
@@ -23,7 +26,8 @@ namespace SmartPantry.DataAccess.Tests.UserRepositoryTests.Base_Setup
             _context = new SmartPantryDbContext(options);
             _context.Database.EnsureCreated();
 
-            _userRepository = new UserRepository(_context);
+            _logger = NullLogger<UserRepository>.Instance;
+            _userRepository = new UserRepository(_context, _logger);
         }
 
         [TearDown]

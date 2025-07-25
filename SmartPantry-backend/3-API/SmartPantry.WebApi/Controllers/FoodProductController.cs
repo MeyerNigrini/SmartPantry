@@ -1,4 +1,5 @@
 ﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SmartPantry.Core.DTOs.FoodProduct;
 using SmartPantry.Core.Exceptions;
@@ -8,6 +9,7 @@ namespace SmartPantry.WebApi.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class FoodProductController : ControllerBase
     {
         private readonly IFoodProductService _service;
@@ -23,6 +25,10 @@ namespace SmartPantry.WebApi.Controllers
         /// Adds a new food product for the authenticated user.
         /// </summary>
         [HttpPost("addFoodProductForUser")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> AddFoodProductForUser([FromBody] FoodProductAddDTO dto)
         {
             // Extract the user ID from JWT claims. If invalid, reject the request.
@@ -59,6 +65,10 @@ namespace SmartPantry.WebApi.Controllers
         /// Returns all food products belonging to the authenticated user.
         /// </summary>
         [HttpGet("getAllFoodProductsForUser")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<FoodProductResponseDTO>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<IEnumerable<FoodProductResponseDTO>>> GetAllFoodProductsForUser()
         {
             var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);

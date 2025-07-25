@@ -32,6 +32,10 @@ namespace SmartPantry.WebApi.Controllers
         /// <param name="request">User registration details.</param>
         /// <returns>Registered user data.</returns>
         [HttpPost("register")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(RegisterUserResponseDTO))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Register([FromBody] RegisterUserRequestDTO request)
         {
             try
@@ -68,6 +72,10 @@ namespace SmartPantry.WebApi.Controllers
         /// <param name="request">User login credentials.</param>
         /// <returns>User details and JWT token.</returns>
         [HttpPost("login")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(LoginResponseDTO))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Login([FromBody] LoginRequestDTO request)
         {
             try
