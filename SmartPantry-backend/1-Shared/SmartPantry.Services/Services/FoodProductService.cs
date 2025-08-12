@@ -12,7 +12,10 @@ namespace SmartPantry.Services.Services
         private readonly IFoodProductRepository _repository;
         private readonly ILogger<FoodProductService> _logger;
 
-        public FoodProductService(IFoodProductRepository repository, ILogger<FoodProductService> logger)
+        public FoodProductService(
+            IFoodProductRepository repository,
+            ILogger<FoodProductService> logger
+        )
         {
             _repository = repository;
             _logger = logger;
@@ -26,7 +29,6 @@ namespace SmartPantry.Services.Services
             if (userId == Guid.Empty)
                 throw new InvalidInputException("User ID is invalid.");
 
-
             var entity = new FoodProductEntity
             {
                 Id = Guid.NewGuid(),
@@ -36,9 +38,9 @@ namespace SmartPantry.Services.Services
                 Quantity = dto.Quantity,
                 Brands = dto.Brands,
                 Categories = dto.Categories,
-                AddedDate = DateTime.UtcNow
+                AddedDate = DateTime.UtcNow,
             };
-            
+
             try
             {
                 await _repository.AddFoodProductForUserAsync(entity);
@@ -50,7 +52,9 @@ namespace SmartPantry.Services.Services
             }
         }
 
-        public async Task<IEnumerable<FoodProductResponseDTO>> GetAllFoodProductsForUserAsync(Guid userId)
+        public async Task<IEnumerable<FoodProductResponseDTO>> GetAllFoodProductsForUserAsync(
+            Guid userId
+        )
         {
             if (userId == Guid.Empty)
                 throw new InvalidInputException("User ID is invalid.");
@@ -66,7 +70,7 @@ namespace SmartPantry.Services.Services
                     Quantity = p.Quantity,
                     Brands = p.Brands,
                     Categories = p.Categories,
-                    AddedDate = p.AddedDate
+                    AddedDate = p.AddedDate,
                 });
             }
             catch (Exception ex)

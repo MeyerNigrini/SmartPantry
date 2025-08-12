@@ -15,7 +15,10 @@ namespace SmartPantry.WebApi.Controllers
         private readonly IFoodProductService _service;
         private readonly ILogger<FoodProductController> _logger;
 
-        public FoodProductController(IFoodProductService service, ILogger<FoodProductController> logger)
+        public FoodProductController(
+            IFoodProductService service,
+            ILogger<FoodProductController> logger
+        )
         {
             _service = service;
             _logger = logger;
@@ -65,11 +68,16 @@ namespace SmartPantry.WebApi.Controllers
         /// Returns all food products belonging to the authenticated user.
         /// </summary>
         [HttpGet("getAllFoodProductsForUser")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<FoodProductResponseDTO>))]
+        [ProducesResponseType(
+            StatusCodes.Status200OK,
+            Type = typeof(IEnumerable<FoodProductResponseDTO>)
+        )]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<IEnumerable<FoodProductResponseDTO>>> GetAllFoodProductsForUser()
+        public async Task<
+            ActionResult<IEnumerable<FoodProductResponseDTO>>
+        > GetAllFoodProductsForUser()
         {
             var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
 

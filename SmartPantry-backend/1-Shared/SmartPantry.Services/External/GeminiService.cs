@@ -2,9 +2,9 @@
 using System.Text.Json;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using SmartPantry.Core.Interfaces.Services;
-using SmartPantry.Core.Interfaces.Repositories;
 using SmartPantry.Core.Exceptions;
+using SmartPantry.Core.Interfaces.Repositories;
+using SmartPantry.Core.Interfaces.Services;
 
 namespace SmartPantry.Services.External
 {
@@ -15,8 +15,12 @@ namespace SmartPantry.Services.External
         private readonly IFoodProductRepository _foodProductRepository;
         private readonly string _geminiEndpoint;
 
-
-        public GeminiService(HttpClient httpClient, IConfiguration config, ILogger<GeminiService> logger, IFoodProductRepository foodProductRepository)
+        public GeminiService(
+            HttpClient httpClient,
+            IConfiguration config,
+            ILogger<GeminiService> logger,
+            IFoodProductRepository foodProductRepository
+        )
         {
             _httpClient = httpClient;
             _logger = logger;
@@ -30,7 +34,8 @@ namespace SmartPantry.Services.External
                 throw new InvalidInputException("Gemini API key must be configured.");
             }
 
-            _geminiEndpoint = $"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={apiKey}";
+            _geminiEndpoint =
+                $"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={apiKey}";
         }
 
         public async Task<List<string>> GetIngredientsFromFoodProducts(List<Guid> productIds)
@@ -43,9 +48,9 @@ namespace SmartPantry.Services.External
                 var products = await _foodProductRepository.GetFoodProductsByIdsAsync(productIds);
 
                 // Transform product data into prompt-friendly strings
-                return products.Select(p =>
-                    $"{p.ProductName} - {p.Quantity} - {p.Brands} - {p.Categories}"
-                ).ToList();
+                return products
+                    .Select(p => $"{p.ProductName} - {p.Quantity} - {p.Brands} - {p.Categories}")
+                    .ToList();
             }
             catch (Exception ex)
             {
@@ -60,16 +65,7 @@ namespace SmartPantry.Services.External
             {
                 var requestBody = new
                 {
-                    contents = new[]
-                    {
-                        new
-                        {
-                            parts = new[]
-                            {
-                                new { text = prompt }
-                            }
-                        }
-                    }
+                    contents = new[] { new { parts = new[] { new { text = prompt } } } },
                 };
 
                 var json = JsonSerializer.Serialize(requestBody);
@@ -80,8 +76,14 @@ namespace SmartPantry.Services.External
                 if (!response.IsSuccessStatusCode)
                 {
                     var error = await response.Content.ReadAsStringAsync();
-                    _logger.LogError("Gemini API request failed: {StatusCode} - {Error}", response.StatusCode, error);
-                    throw new ExternalServiceException($"Gemini API error: {response.StatusCode}\n{error}");
+                    _logger.LogError(
+                        "Gemini API request failed: {StatusCode} - {Error}",
+                        response.StatusCode,
+                        error
+                    );
+                    throw new ExternalServiceException(
+                        $"Gemini API error: {response.StatusCode}\n{error}"
+                    );
                 }
 
                 var responseContent = await response.Content.ReadAsStringAsync();
@@ -89,8 +91,8 @@ namespace SmartPantry.Services.External
                 try
                 {
                     using var doc = JsonDocument.Parse(responseContent);
-                    var rawText = doc.RootElement
-                        .GetProperty("candidates")[0]
+                    var rawText = doc
+                        .RootElement.GetProperty("candidates")[0]
                         .GetProperty("content")
                         .GetProperty("parts")[0]
                         .GetProperty("text")
@@ -101,7 +103,10 @@ namespace SmartPantry.Services.External
                     if (rawText?.StartsWith("```") == true)
                     {
                         var lines = rawText.Split('\n');
-                        rawText = string.Join("\n", lines.Skip(1).TakeWhile(l => !l.StartsWith("```")));
+                        rawText = string.Join(
+                            "\n",
+                            lines.Skip(1).TakeWhile(l => !l.StartsWith("```"))
+                        );
                     }
 
                     return rawText ?? "[No content returned by Gemini]";
@@ -109,7 +114,10 @@ namespace SmartPantry.Services.External
                 catch (Exception parseEx)
                 {
                     _logger.LogError(parseEx, "Unexpected JSON structure in Gemini API response.");
-                    throw new ExternalServiceException("Gemini returned an unexpected response format.", parseEx);
+                    throw new ExternalServiceException(
+                        "Gemini returned an unexpected response format.",
+                        parseEx
+                    );
                 }
             }
             catch (HttpRequestException ex)
@@ -129,7 +137,10 @@ namespace SmartPantry.Services.External
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Unhandled error while calling Gemini API.");
-                throw new ExternalServiceException("An unexpected error occurred while calling Gemini.", ex);
+                throw new ExternalServiceException(
+                    "An unexpected error occurred while calling Gemini.",
+                    ex
+                );
             }
         }
     }

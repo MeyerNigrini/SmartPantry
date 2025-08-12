@@ -1,7 +1,7 @@
-﻿using NUnit.Framework;
+﻿using System.Net;
 using System.Text;
 using AwesomeAssertions;
-using System.Net;
+using NUnit.Framework;
 using SmartPantry.WebApi.Tests.UserControllerTests.Base_Setup;
 
 namespace SmartPantry.WebApi.Tests.UserControllerTests

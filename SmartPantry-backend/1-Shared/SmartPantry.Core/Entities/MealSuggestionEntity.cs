@@ -10,6 +10,7 @@ namespace SmartPantry.Core.Entities
         public string SuggestionText { get; set; } = null!;
         public DateTime GeneratedAt { get; set; }
 
-        public ICollection<MealSuggestionFoodProductEntity> MealSuggestionFoodProducts { get; set; } = [];
+        public ICollection<MealSuggestionFoodProductEntity> MealSuggestionFoodProducts { get; set; } =
+        [];
     }
 }

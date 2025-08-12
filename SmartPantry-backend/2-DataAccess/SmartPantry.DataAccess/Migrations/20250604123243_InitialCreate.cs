@@ -20,12 +20,13 @@ namespace SmartPantry.DataAccess.Migrations
                     LastName = table.Column<string>(type: "nvarchar(50)", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(100)", nullable: false),
                     PasswordHash = table.Column<string>(type: "nvarchar(255)", nullable: false),
-                    CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_User", x => x.Id);
-                });
+                }
+            );
 
             migrationBuilder.CreateTable(
                 name: "FoodProduct",
@@ -38,7 +39,7 @@ namespace SmartPantry.DataAccess.Migrations
                     Ingredients = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Quantity = table.Column<string>(type: "nvarchar(50)", nullable: false),
                     ExpiryDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    AddedDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    AddedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                 },
                 constraints: table =>
                 {
@@ -47,8 +48,10 @@ namespace SmartPantry.DataAccess.Migrations
                         name: "FK_FoodProduct_User_UserID",
                         column: x => x.UserID,
                         principalTable: "User",
-                        principalColumn: "Id");
-                });
+                        principalColumn: "Id"
+                    );
+                }
+            );
 
             migrationBuilder.CreateTable(
                 name: "MealSuggestion",
@@ -57,7 +60,7 @@ namespace SmartPantry.DataAccess.Migrations
                     ID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     UserID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     SuggestionText = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    GeneratedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    GeneratedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                 },
                 constraints: table =>
                 {
@@ -66,68 +69,79 @@ namespace SmartPantry.DataAccess.Migrations
                         name: "FK_MealSuggestion_User_UserID",
                         column: x => x.UserID,
                         principalTable: "User",
-                        principalColumn: "Id");
-                });
+                        principalColumn: "Id"
+                    );
+                }
+            );
 
             migrationBuilder.CreateTable(
                 name: "MealSuggestionFoodProduct",
                 columns: table => new
                 {
-                    MealSuggestionID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    MealSuggestionID = table.Column<Guid>(
+                        type: "uniqueidentifier",
+                        nullable: false
+                    ),
                     FoodProductID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    OrderIndex = table.Column<int>(type: "int", nullable: false)
+                    OrderIndex = table.Column<int>(type: "int", nullable: false),
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_MealSuggestionFoodProduct", x => new { x.MealSuggestionID, x.FoodProductID });
+                    table.PrimaryKey(
+                        "PK_MealSuggestionFoodProduct",
+                        x => new { x.MealSuggestionID, x.FoodProductID }
+                    );
                     table.ForeignKey(
                         name: "FK_MealSuggestionFoodProduct_FoodProduct_FoodProductID",
                         column: x => x.FoodProductID,
                         principalTable: "FoodProduct",
-                        principalColumn: "Id");
+                        principalColumn: "Id"
+                    );
                     table.ForeignKey(
                         name: "FK_MealSuggestionFoodProduct_MealSuggestion_MealSuggestionID",
                         column: x => x.MealSuggestionID,
                         principalTable: "MealSuggestion",
-                        principalColumn: "ID");
-                });
+                        principalColumn: "ID"
+                    );
+                }
+            );
 
             migrationBuilder.CreateIndex(
                 name: "IX_FoodProduct_UserID",
                 table: "FoodProduct",
-                column: "UserID");
+                column: "UserID"
+            );
 
             migrationBuilder.CreateIndex(
                 name: "IX_MealSuggestion_UserID",
                 table: "MealSuggestion",
-                column: "UserID");
+                column: "UserID"
+            );
 
             migrationBuilder.CreateIndex(
                 name: "IX_MealSuggestionFoodProduct_FoodProductID",
                 table: "MealSuggestionFoodProduct",
-                column: "FoodProductID");
+                column: "FoodProductID"
+            );
 
             migrationBuilder.CreateIndex(
                 name: "IX_User_Email",
                 table: "User",
                 column: "Email",
-                unique: true);
+                unique: true
+            );
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "MealSuggestionFoodProduct");
+            migrationBuilder.DropTable(name: "MealSuggestionFoodProduct");
 
-            migrationBuilder.DropTable(
-                name: "FoodProduct");
+            migrationBuilder.DropTable(name: "FoodProduct");
 
-            migrationBuilder.DropTable(
-                name: "MealSuggestion");
+            migrationBuilder.DropTable(name: "MealSuggestion");
 
-            migrationBuilder.DropTable(
-                name: "User");
+            migrationBuilder.DropTable(name: "User");
         }
     }
 }

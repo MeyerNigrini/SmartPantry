@@ -1,7 +1,7 @@
-﻿using NUnit.Framework;
-using SmartPantry.Core.Entities;
-using AwesomeAssertions;
+﻿using AwesomeAssertions;
 using Microsoft.EntityFrameworkCore;
+using NUnit.Framework;
+using SmartPantry.Core.Entities;
 
 namespace SmartPantry.DataAccess.Tests.UserRepositoryTests
 {
@@ -24,7 +24,7 @@ namespace SmartPantry.DataAccess.Tests.UserRepositoryTests
                 LastName = "User",
                 Email = "test@example.com",
                 PasswordHash = "hashedpassword",
-                CreateDate = DateTime.UtcNow
+                CreateDate = DateTime.UtcNow,
             };
 
             var result = await _userRepository.AddUserAsync(user);
@@ -47,7 +47,7 @@ namespace SmartPantry.DataAccess.Tests.UserRepositoryTests
                 LastName = "User",
                 Email = "existing@example.com",
                 PasswordHash = "hash",
-                CreateDate = DateTime.UtcNow
+                CreateDate = DateTime.UtcNow,
             };
 
             await _context.Users.AddAsync(user);

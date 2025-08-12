@@ -8,14 +8,10 @@
         public SmartPantryException() { }
 
         public SmartPantryException(string message)
-            : base(message)
-        {
-        }
+            : base(message) { }
 
         public SmartPantryException(string message, Exception innerException)
-            : base(message, innerException)
-        {
-        }
+            : base(message, innerException) { }
     }
 
     /// <summary>
@@ -25,9 +21,7 @@
     public class UserAlreadyExistsException : SmartPantryException
     {
         public UserAlreadyExistsException(string email)
-            : base($"A user with email '{email}' already exists.")
-        {
-        }
+            : base($"A user with email '{email}' already exists.") { }
     }
 
     /// <summary>
@@ -37,9 +31,7 @@
     public class OperationNotAllowedException : SmartPantryException
     {
         public OperationNotAllowedException(string message)
-            : base(message)
-        {
-        }
+            : base(message) { }
     }
 
     /// <summary>
@@ -48,7 +40,8 @@
     /// </summary>
     public class InvalidInputException : SmartPantryException
     {
-        public InvalidInputException(string message) : base(message) { }
+        public InvalidInputException(string message)
+            : base(message) { }
     }
 
     /// <summary>
@@ -67,6 +60,7 @@
     /// </summary>
     public class ExternalServiceException : SmartPantryException
     {
-        public ExternalServiceException(string message, Exception? inner = null) : base(message, inner) { }
+        public ExternalServiceException(string message, Exception? inner = null)
+            : base(message, inner) { }
     }
 }

@@ -27,13 +27,15 @@ namespace SmartPantry.Services.Tests.UserServiceTests.Base_Setup
             _passwordServiceMock = new Mock<IPasswordService>();
             _loggerMock = new Mock<ILogger<UserService>>();
 
-            _jwtOptions = Options.Create(new JWTSettings
-            {
-                Key = "ThisIsASecureKeyChangeMe1234567890123456!",
-                Issuer = "TestIssuer",
-                Audience = "TestAudience",
-                ExpiryMinutes = 60
-            });
+            _jwtOptions = Options.Create(
+                new JWTSettings
+                {
+                    Key = "ThisIsASecureKeyChangeMe1234567890123456!",
+                    Issuer = "TestIssuer",
+                    Audience = "TestAudience",
+                    ExpiryMinutes = 60,
+                }
+            );
 
             _service = new UserService(
                 _userRepoMock.Object,

@@ -13,7 +13,10 @@ namespace YourApp.API.Controllers
         private readonly IOpenFoodFactsService _openFoodFactsService;
         private readonly ILogger<OpenFoodFactsController> _logger;
 
-        public OpenFoodFactsController(IOpenFoodFactsService openFoodFactsService, ILogger<OpenFoodFactsController> logger)
+        public OpenFoodFactsController(
+            IOpenFoodFactsService openFoodFactsService,
+            ILogger<OpenFoodFactsController> logger
+        )
         {
             _openFoodFactsService = openFoodFactsService;
             _logger = logger;
@@ -31,7 +34,13 @@ namespace YourApp.API.Controllers
             {
                 var result = await _openFoodFactsService.GetProductDetailsByBarcodeAsync(barcode);
 
-                if (string.Equals(result.StatusVerbose, "product not found", StringComparison.OrdinalIgnoreCase))
+                if (
+                    string.Equals(
+                        result.StatusVerbose,
+                        "product not found",
+                        StringComparison.OrdinalIgnoreCase
+                    )
+                )
                     return NotFound(new { message = "Product not found" });
 
                 return Ok(result);
@@ -43,15 +52,26 @@ namespace YourApp.API.Controllers
             }
             catch (ExternalServiceException ex)
             {
-                _logger.LogError(ex, "External service (OpenFoodFacts) error for barcode {Barcode}", barcode);
-                return StatusCode(StatusCodes.Status502BadGateway,
-                    new { message = "External service is currently unavailable. Please try again later." });
+                _logger.LogError(
+                    ex,
+                    "External service (OpenFoodFacts) error for barcode {Barcode}",
+                    barcode
+                );
+                return StatusCode(
+                    StatusCodes.Status502BadGateway,
+                    new
+                    {
+                        message = "External service is currently unavailable. Please try again later.",
+                    }
+                );
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Unexpected error while fetching product {Barcode}", barcode);
-                return StatusCode(StatusCodes.Status500InternalServerError,
-                    new { message = "An unexpected error occurred." });
+                return StatusCode(
+                    StatusCodes.Status500InternalServerError,
+                    new { message = "An unexpected error occurred." }
+                );
             }
         }
     }

@@ -39,10 +39,11 @@ namespace SmartPantry.DataAccess.Contexts
                 entity.Property(f => f.AddedDate).HasColumnType("datetime2");
 
                 // User Relationship
-                entity.HasOne(f => f.User)
-                      .WithMany(u => u.FoodProducts)
-                      .HasForeignKey(f => f.UserID)
-                      .OnDelete(DeleteBehavior.NoAction);
+                entity
+                    .HasOne(f => f.User)
+                    .WithMany(u => u.FoodProducts)
+                    .HasForeignKey(f => f.UserID)
+                    .OnDelete(DeleteBehavior.NoAction);
             });
 
             // MealSuggestion Table
@@ -54,10 +55,11 @@ namespace SmartPantry.DataAccess.Contexts
                 entity.Property(m => m.GeneratedAt).HasColumnType("datetime2");
 
                 // User Relationship
-                entity.HasOne(m => m.User)
-                      .WithMany(u => u.MealSuggestions)
-                      .HasForeignKey(m => m.UserID)
-                      .OnDelete(DeleteBehavior.NoAction);
+                entity
+                    .HasOne(m => m.User)
+                    .WithMany(u => u.MealSuggestions)
+                    .HasForeignKey(m => m.UserID)
+                    .OnDelete(DeleteBehavior.NoAction);
             });
 
             // MealSuggestionFoodProduct (Join Table)
@@ -70,16 +72,18 @@ namespace SmartPantry.DataAccess.Contexts
                 entity.Property(m => m.OrderIndex).HasColumnType("int");
 
                 // MealSuggestion Relationship
-                entity.HasOne(m => m.MealSuggestion)
-                      .WithMany(ms => ms.MealSuggestionFoodProducts)
-                      .HasForeignKey(m => m.MealSuggestionID)
-                      .OnDelete(DeleteBehavior.NoAction);
+                entity
+                    .HasOne(m => m.MealSuggestion)
+                    .WithMany(ms => ms.MealSuggestionFoodProducts)
+                    .HasForeignKey(m => m.MealSuggestionID)
+                    .OnDelete(DeleteBehavior.NoAction);
 
                 // FoodProduct Relationship
-                entity.HasOne(m => m.FoodProduct)
-                      .WithMany(fp => fp.MealSuggestionFoodProducts)
-                      .HasForeignKey(m => m.FoodProductID)
-                      .OnDelete(DeleteBehavior.NoAction);
+                entity
+                    .HasOne(m => m.FoodProduct)
+                    .WithMany(fp => fp.MealSuggestionFoodProducts)
+                    .HasForeignKey(m => m.FoodProductID)
+                    .OnDelete(DeleteBehavior.NoAction);
             });
 
             #endregion
@@ -90,7 +94,8 @@ namespace SmartPantry.DataAccess.Contexts
         public DbSet<UserEntity> Users => Set<UserEntity>();
         public DbSet<FoodProductEntity> FoodProducts => Set<FoodProductEntity>();
         public DbSet<MealSuggestionEntity> MealSuggestions => Set<MealSuggestionEntity>();
-        public DbSet<MealSuggestionFoodProductEntity> MealSuggestionFoodProducts => Set<MealSuggestionFoodProductEntity>();
+        public DbSet<MealSuggestionFoodProductEntity> MealSuggestionFoodProducts =>
+            Set<MealSuggestionFoodProductEntity>();
 
         #endregion
     }

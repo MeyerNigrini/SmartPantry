@@ -11,7 +11,10 @@ namespace SmartPantry.DataAccess.Repositories
         private readonly SmartPantryDbContext _context;
         private readonly ILogger<FoodProductRepository> _logger;
 
-        public FoodProductRepository(SmartPantryDbContext context, ILogger<FoodProductRepository> logger)
+        public FoodProductRepository(
+            SmartPantryDbContext context,
+            ILogger<FoodProductRepository> logger
+        )
         {
             _context = context;
             _logger = logger;
@@ -26,12 +29,20 @@ namespace SmartPantry.DataAccess.Repositories
             }
             catch (DbUpdateException ex)
             {
-                _logger.LogError(ex, "DB update failed while adding food product {ProductId}", product.Id);
+                _logger.LogError(
+                    ex,
+                    "DB update failed while adding food product {ProductId}",
+                    product.Id
+                );
                 throw;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Unexpected error in AddAsync for product {ProductId}", product.Id);
+                _logger.LogError(
+                    ex,
+                    "Unexpected error in AddAsync for product {ProductId}",
+                    product.Id
+                );
                 throw;
             }
         }
@@ -46,9 +57,7 @@ namespace SmartPantry.DataAccess.Repositories
 
             try
             {
-                return await _context.FoodProducts
-                                     .Where(p => p.UserID == userId)
-                                     .ToListAsync();
+                return await _context.FoodProducts.Where(p => p.UserID == userId).ToListAsync();
             }
             catch (Exception ex)
             {
@@ -67,16 +76,17 @@ namespace SmartPantry.DataAccess.Repositories
 
             try
             {
-                return await _context.FoodProducts
-                                     .Where(p => ids.Contains(p.Id))
-                                     .ToListAsync();
+                return await _context.FoodProducts.Where(p => ids.Contains(p.Id)).ToListAsync();
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error retrieving food products for IDs: {Ids}", string.Join(", ", ids));
+                _logger.LogError(
+                    ex,
+                    "Error retrieving food products for IDs: {Ids}",
+                    string.Join(", ", ids)
+                );
                 throw;
             }
         }
-
     }
 }

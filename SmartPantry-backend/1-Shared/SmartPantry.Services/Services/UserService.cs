@@ -27,10 +27,11 @@ namespace SmartPantry.Services.Services
         /// Constructs a new UserService with required dependencies.
         /// </summary>
         public UserService(
-            IUserRepository userRepository, 
-            IPasswordService passwordService, 
-            ILogger<UserService> logger, 
-            IOptions<JWTSettings> jwtOptions)
+            IUserRepository userRepository,
+            IPasswordService passwordService,
+            ILogger<UserService> logger,
+            IOptions<JWTSettings> jwtOptions
+        )
         {
             _userRepository = userRepository;
             _passwordService = passwordService;
@@ -45,7 +46,10 @@ namespace SmartPantry.Services.Services
             request.LastName = request.LastName?.Trim();
             request.Email = request.Email?.Trim();
 
-            if (string.IsNullOrWhiteSpace(request.Email) || string.IsNullOrWhiteSpace(request.Password))
+            if (
+                string.IsNullOrWhiteSpace(request.Email)
+                || string.IsNullOrWhiteSpace(request.Password)
+            )
                 throw new InvalidInputException("Email and password are required.");
 
             _logger.LogInformation("Attempting to register user with email {Email}", request.Email);
@@ -65,18 +69,21 @@ namespace SmartPantry.Services.Services
                     LastName = request.LastName,
                     Email = request.Email,
                     PasswordHash = hashedPassword,
-                    CreateDate = DateTime.UtcNow
+                    CreateDate = DateTime.UtcNow,
                 };
 
                 await _userRepository.AddUserAsync(user);
-                _logger.LogInformation("User with email {Email} registered successfully.", user.Email);
+                _logger.LogInformation(
+                    "User with email {Email} registered successfully.",
+                    user.Email
+                );
 
                 return new RegisterUserResponseDTO
                 {
                     Id = user.Id,
                     FirstName = user.FirstName,
                     LastName = user.LastName,
-                    Email = user.Email
+                    Email = user.Email,
                 };
             }
             catch (Exception ex) when (!(ex is UserAlreadyExistsException))
@@ -94,7 +101,10 @@ namespace SmartPantry.Services.Services
             try
             {
                 var user = await _userRepository.GetUserByEmailAsync(request.Email);
-                if (user == null || !_passwordService.VerifyPassword(request.Password, user.PasswordHash))
+                if (
+                    user == null
+                    || !_passwordService.VerifyPassword(request.Password, user.PasswordHash)
+                )
                 {
                     _logger.LogWarning("Invalid login attempt for email {Email}", request.Email);
                     throw new SmartPantryException("Invalid email or password.");
@@ -110,7 +120,7 @@ namespace SmartPantry.Services.Services
                     FirstName = user.FirstName,
                     LastName = user.LastName,
                     Email = user.Email,
-                    Token = token
+                    Token = token,
                 };
             }
             catch (Exception ex) when (!(ex is SmartPantryException))
@@ -127,16 +137,21 @@ namespace SmartPantry.Services.Services
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(new[]
-                {
-                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                    new Claim(ClaimTypes.Name, user.FirstName),
-                    new Claim(ClaimTypes.Email, user.Email)
-                }),
+                Subject = new ClaimsIdentity(
+                    new[]
+                    {
+                        new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                        new Claim(ClaimTypes.Name, user.FirstName),
+                        new Claim(ClaimTypes.Email, user.Email),
+                    }
+                ),
                 Expires = DateTime.UtcNow.AddMinutes(_jwtSettings.ExpiryMinutes),
                 Issuer = _jwtSettings.Issuer,
                 Audience = _jwtSettings.Audience,
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+                SigningCredentials = new SigningCredentials(
+                    new SymmetricSecurityKey(key),
+                    SecurityAlgorithms.HmacSha256Signature
+                ),
             };
 
             return tokenHandler.WriteToken(tokenHandler.CreateToken(tokenDescriptor));

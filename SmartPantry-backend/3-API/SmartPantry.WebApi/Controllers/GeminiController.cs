@@ -1,8 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
-using SmartPantry.Core.Interfaces.Services;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SmartPantry.Core.Exceptions;
-
+using SmartPantry.Core.Interfaces.Services;
 
 namespace SmartPantry.WebApi.Controllers
 {
@@ -31,7 +30,9 @@ namespace SmartPantry.WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status502BadGateway)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GenerateRecipeFromSelectedProducts([FromBody] List<Guid> selectedIds)
+        public async Task<IActionResult> GenerateRecipeFromSelectedProducts(
+            [FromBody] List<Guid> selectedIds
+        )
         {
             try
             {
@@ -46,14 +47,15 @@ namespace SmartPantry.WebApi.Controllers
                 var formattedIngredients = string.Join("\n- ", ingredients);
 
                 var prompt =
-                    "Using the ingredients listed below, generate a recipe in **this EXACT JSON format**:\n\n" +
-                    "{\n" +
-                    "  \"title\": \"<generated title>\",\n" +
-                    "  \"ingredients\": [\"ingredient 1\", \"ingredient 2\", ...],\n" +
-                    "  \"instructions\": [\"Step 1:\", \"Step 2:\", \"Step 3:\", ...]\n" +
-                    "}\n\n" +
-                    "Use only the ingredients provided.\n\n" +
-                    "Ingredients:\n- " + formattedIngredients;
+                    "Using the ingredients listed below, generate a recipe in **this EXACT JSON format**:\n\n"
+                    + "{\n"
+                    + "  \"title\": \"<generated title>\",\n"
+                    + "  \"ingredients\": [\"ingredient 1\", \"ingredient 2\", ...],\n"
+                    + "  \"instructions\": [\"Step 1:\", \"Step 2:\", \"Step 3:\", ...]\n"
+                    + "}\n\n"
+                    + "Use only the ingredients provided.\n\n"
+                    + "Ingredients:\n- "
+                    + formattedIngredients;
 
                 var recipe = await _geminiService.GetGeminiResponse(prompt);
 
@@ -72,7 +74,10 @@ namespace SmartPantry.WebApi.Controllers
             catch (ExternalServiceException ex)
             {
                 _logger.LogError(ex, "Gemini API failed in GenerateRecipeFromSelectedProducts.");
-                return StatusCode(502, new { message = "AI service is currently unavailable. Please try again later." });
+                return StatusCode(
+                    502,
+                    new { message = "AI service is currently unavailable. Please try again later." }
+                );
             }
             catch (Exception ex)
             {
