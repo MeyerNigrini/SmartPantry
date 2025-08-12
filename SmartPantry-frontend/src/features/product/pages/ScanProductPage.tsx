@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Title, Stack, Text, Button, TextInput, Group } from '@mantine/core';
+import { Title, Stack, Text, Button, TextInput, Group, Flex } from '@mantine/core';
 import BarcodeScanner from '../components/BarcodeScanner';
 import ProductForm from '../components/ProductForm';
 import { fetchProductByBarcode, AddFoodProductForUser } from '../services/productService';
@@ -69,31 +69,34 @@ export default function ScanProductPage() {
 
   return (
     <Stack>
-      <Title>Scan or Add Product</Title>
+      <Title>Scan and Add Product</Title>
+      <Flex align="start" gap="xl">
+        {/* Left side: Scanner */}
+        <Stack flex={1}>
+          <BarcodeScanner onScan={handleScan} />
+          <Group align="end" grow w="100%">
+            <TextInput
+              placeholder="Enter or scan a barcode"
+              value={barcode}
+              onChange={(e) => setBarcode(e.currentTarget.value)}
+            />
+            <Button onClick={() => handleSearch()}>Search Product</Button>
+          </Group>
+        </Stack>
 
-      <BarcodeScanner onScan={handleScan} />
+        {/* Right side: Form and controls */}
+        <Stack flex={2}>
+          {notFound && (
+            <Text color="red">Product not found. Please enter the details manually.</Text>
+          )}
 
-      <Group align="end">
-        <TextInput
-          label="Barcode"
-          placeholder="Enter or scan a barcode"
-          value={barcode}
-          onChange={(e) => setBarcode(e.currentTarget.value)}
-        />
-        <Button onClick={() => handleSearch()}>Search Product</Button>
-      </Group>
+          <ProductForm product={product} onChange={setProduct} />
 
-      {notFound && <Text color="red">Product not found. Please enter the details manually.</Text>}
-
-
-
-
-
-      <ProductForm product={product} onChange={setProduct} />
-
-      <Button onClick={handleSave} disabled={!product.productName}>
-        Save Product
-      </Button>
+          <Button onClick={handleSave} disabled={!product.productName}>
+            Save Product
+          </Button>
+        </Stack>
+      </Flex>
     </Stack>
   );
 }

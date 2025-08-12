@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Html5Qrcode } from 'html5-qrcode';
-import { Box, Button, Stack } from '@mantine/core';
+import { Box, Button, Group, Stack } from '@mantine/core';
 import { showCustomNotification } from '../../../components/CustomNotification';
 
 type BarcodeScannerProps = {
@@ -104,33 +104,6 @@ export default function BarcodeScanner({ onScan }: BarcodeScannerProps) {
 
   return (
     <Stack>
-      {/* Control Panel */}
-      <Box>
-        <Stack>
-          {/* Toggle live camera scanning */}
-          <Button
-            onClick={isScanning ? stopScanner : startScanner}
-            color={isScanning ? 'red' : 'blue'}
-          >
-            {isScanning ? 'Stop Scanner' : 'Start Scanner'}
-          </Button>
-
-          {/* Trigger image file input to scan a static image */}
-          <Button onClick={() => fileInputRef.current?.click()}>
-            Upload Image to Scan
-          </Button>
-        </Stack>
-
-        {/* Hidden file input for image upload */}
-        <input
-          type="file"
-          accept="image/*"
-          ref={fileInputRef}
-          style={{ display: 'none' }}
-          onChange={handleFileUpload}
-        />
-      </Box>
-
       {/* Camera stream renders into this container */}
       <Box
         id="scanner-container"
@@ -143,6 +116,29 @@ export default function BarcodeScanner({ onScan }: BarcodeScannerProps) {
           overflow: 'hidden',
         }}
       />
+      <Box>
+        <Group grow w="100%">
+          {/* Toggle live camera scanning */}
+          <Button
+            onClick={isScanning ? stopScanner : startScanner}
+            color={isScanning ? 'red' : 'blue'}
+          >
+            {isScanning ? 'Stop Scanner' : 'Start Scanner'}
+          </Button>
+
+          {/* Trigger image file input to scan a static image */}
+          <Button onClick={() => fileInputRef.current?.click()}>Upload Image to Scan</Button>
+        </Group>
+
+        {/* Hidden file input for image upload */}
+        <input
+          type="file"
+          accept="image/*"
+          ref={fileInputRef}
+          style={{ display: 'none' }}
+          onChange={handleFileUpload}
+        />
+      </Box>
     </Stack>
   );
 }
