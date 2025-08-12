@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SmartPantry.Core.DTOs.Gemini;
 using SmartPantry.Core.Exceptions;
 using SmartPantry.Core.Interfaces.Services;
 
@@ -82,6 +83,52 @@ namespace SmartPantry.WebApi.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Unexpected error in GenerateRecipeFromSelectedProducts.");
+                return StatusCode(500, new { message = "An unexpected error occurred." });
+            }
+        }
+
+        /// <summary>
+        /// Extracts product metadata (name, quantity, brand, categories) from a product photo.
+        /// </summary>
+        [HttpPost("extract-product")]
+        [Consumes("multipart/form-data")]
+        [RequestFormLimits(MultipartBodyLengthLimit = 20 * 1024 * 1024)]
+        [RequestSizeLimit(20 * 1024 * 1024)]
+        [ProducesResponseType(typeof(ProductVisionExtract), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status502BadGateway)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> ExtractProduct(IFormFile image, CancellationToken ct)
+        {
+            try
+            {
+                if (image is null || image.Length == 0)
+                    return BadRequest(new { message = "Image file is required." });
+
+                await using var ms = new MemoryStream();
+                await image.CopyToAsync(ms, ct);
+
+                var payload = new ImagePayload(ms.ToArray(), image.ContentType);
+                var result = await _geminiService.ExtractProductFromImageAsync(payload, ct);
+
+                return Ok(result);
+            }
+            catch (InvalidInputException ex)
+            {
+                _logger.LogWarning(ex, "Invalid image input in ExtractProduct.");
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (ExternalServiceException ex)
+            {
+                _logger.LogError(ex, "Gemini API failed in ExtractProduct.");
+                return StatusCode(
+                    502,
+                    new { message = "AI service is currently unavailable. Please try again later." }
+                );
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Unexpected error in ExtractProduct.");
                 return StatusCode(500, new { message = "An unexpected error occurred." });
             }
         }

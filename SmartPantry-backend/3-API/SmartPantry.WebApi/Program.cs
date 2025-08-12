@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using SmartPantry.Core.Interfaces.Repositories;
@@ -11,6 +12,22 @@ using SmartPantry.Services.External;
 using SmartPantry.Services.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// --- Gemini config + client ---
+builder.Services.Configure<GeminiSettings>(builder.Configuration.GetSection("Gemini"));
+
+builder.Services.AddHttpClient<IGeminiService, GeminiService>(client =>
+{
+    var timeout = builder.Configuration.GetValue<int?>("Gemini:TimeoutSeconds") ?? 20;
+    client.Timeout = TimeSpan.FromSeconds(timeout);
+});
+
+// Allow image uploads up to configured size (default 20 MB)
+builder.Services.Configure<FormOptions>(o =>
+{
+    o.MultipartBodyLengthLimit =
+        builder.Configuration.GetValue<long?>("Gemini:MaxImageBytes") ?? (20L * 1024 * 1024);
+});
 
 // Add services to the container
 builder.Services.AddControllers();
