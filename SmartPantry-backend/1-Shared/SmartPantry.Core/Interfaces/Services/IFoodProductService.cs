@@ -6,5 +6,7 @@ namespace SmartPantry.Core.Interfaces.Services
     {
         Task AddFoodProductForUserAsync(FoodProductAddDTO dto, Guid userId);
         Task<IEnumerable<FoodProductResponseDTO>> GetAllFoodProductsForUserAsync(Guid userId);
+        Task<int> DeleteFoodProductsForUserAsync(List<Guid> productIds, Guid userId);
+
     }
 }

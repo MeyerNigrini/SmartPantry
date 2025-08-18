@@ -79,5 +79,42 @@ namespace SmartPantry.Services.Services
                 throw new PersistenceException("Failed to retrieve food products.", ex);
             }
         }
+
+        public async Task<int> DeleteFoodProductsForUserAsync(List<Guid> productIds, Guid userId)
+        {
+            if (userId == Guid.Empty)
+                throw new InvalidInputException("User ID is invalid.");
+
+            if (productIds == null || productIds.Count == 0)
+                throw new InvalidInputException("At least one product ID is required.");
+
+            try
+            {
+                var deleted = await _repository.DeleteFoodProductsByIdsAsync(userId, productIds);
+
+                if (deleted == 0)
+                {
+                    // Surface a semantic error so the controller can send a 400
+                    throw new InvalidInputException("No matching products found to delete.");
+                }
+
+                return deleted;
+            }
+            catch (InvalidInputException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(
+                    ex,
+                    "Error deleting products {@ProductIds} for user {UserId}.",
+                    productIds,
+                    userId
+                );
+                // Keep external contract consistent with your other methods
+                throw new PersistenceException("Failed to delete food products.", ex);
+            }
+        }
     }
 }

@@ -1,0 +1,19 @@
+meta {
+  name: deleteFoodProductsForUser
+  type: http
+  seq: 3
+}
+
+delete {
+  url: {{BaseURL}}{{Controller}}/deleteFoodProductsForUser
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "productIds": [
+      "3A262532-4FE4-4D14-A1DA-3F86C2B43B99"
+    ]
+  }
+}
