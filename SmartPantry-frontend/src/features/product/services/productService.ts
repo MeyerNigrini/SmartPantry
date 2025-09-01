@@ -32,3 +32,10 @@ export const GetAllFoodProductsForUser = async (): Promise<ProductResponse[]> =>
   const res = await api.get('/FoodProduct/getAllFoodProductsForUser');
   return res.data;
 };
+
+// DELETE selected products
+export async function DeleteFoodProductsForUser(productIds: string[]): Promise<void> {
+  await api.delete('/FoodProduct/deleteFoodProductsForUser', {
+    data: { productIds },
+  });
+}
