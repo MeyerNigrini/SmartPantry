@@ -62,18 +62,13 @@ export default function Navbar() {
       <Group gap="xs" visibleFrom="md">
         <NavButton to="/products">My Products</NavButton>
         <NavButton to="/scan-product">Scan Product</NavButton>
-        <NavButton>Recipes</NavButton>
       </Group>
 
       {/* Right side buttons */}
-      <Group gap="sm">
-        <Button variant="outline" size="sm" bd="1px solid var(--mantine-color-gray-4)" c="black">
-          My Profile
-        </Button>
-        <Button size="sm" color="dark" fw={500} onClick={handleLogout}>
-          Logout
-        </Button>
-      </Group>
+
+      <Button size="sm" color="dark" fw={500} onClick={handleLogout}>
+        Logout
+      </Button>
     </Flex>
   );
 }
