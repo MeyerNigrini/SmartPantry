@@ -11,14 +11,12 @@ import App from './App';
 import { AuthProvider } from './context/AuthContext';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
-
-    <MantineProvider>
-      <BrowserRouter>
-        <AuthProvider>
-          <Notifications position="bottom-right" />
-            <App />
-        </AuthProvider>
-      </BrowserRouter>
-    </MantineProvider>
-,
+  <MantineProvider>
+    <BrowserRouter>
+      <AuthProvider>
+        <Notifications position="bottom-right" />
+        <App />
+      </AuthProvider>
+    </BrowserRouter>
+  </MantineProvider>,
 );

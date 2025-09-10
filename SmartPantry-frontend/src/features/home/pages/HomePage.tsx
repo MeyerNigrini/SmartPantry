@@ -8,7 +8,6 @@ export default function HomePage() {
   return (
     <Stack>
       <Title order={2}>Welcome, {user?.firstName}</Title>
-      
     </Stack>
   );
 }
