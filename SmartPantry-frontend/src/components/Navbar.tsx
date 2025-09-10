@@ -1,7 +1,31 @@
 // Navbar component with navigation and logout functionality
-import { Box, Button, Group, Title } from '@mantine/core';
+import { Button, Flex, Group, Title, type ButtonProps } from '@mantine/core';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+
+type NavButtonProps = ButtonProps & {
+  to?: string;
+};
+
+/**
+ * Reusable Navbar button.
+ * - Transparent, gray text by default
+ * - Navigates when `to` is set
+ */
+function NavButton({ to, children, ...props }: NavButtonProps) {
+  const navigate = useNavigate();
+  return (
+    <Button
+      variant="transparent"
+      c="gray.6"
+      fz="md"
+      onClick={to ? () => navigate(to) : undefined}
+      {...props}
+    >
+      {children}
+    </Button>
+  );
+}
 
 export default function Navbar() {
   const { logout } = useAuth(); // Logout method from auth context
@@ -14,35 +38,42 @@ export default function Navbar() {
   };
 
   return (
-    <Box
+    <Flex
       component="nav"
       px="md"
       py="sm"
-      style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        borderBottom: '1px solid #dee2e6',
-      }}
+      justify="space-between"
+      align="center"
+      bg="white"
+      bd="1px solid var(--mantine-color-gray-3)"
     >
-      {/* App title with navigation to home */}
-      <Title order={3} onClick={() => navigate('/home')} style={{ cursor: 'pointer' }}>
+      {/* App Title / Home Navigation button */}
+      <Title
+        order={3}
+        onClick={() => navigate('/home')}
+        c="black"
+        fw={600}
+        style={{ cursor: 'pointer' }}
+      >
         SmartPantry
       </Title>
-      <Group>
-        {/* Navigates to the ProductList page (/products) */}
-        <Button size="xs" variant="light" onClick={() => navigate('/products')}>
-          My Products
+
+      {/* Center Navigation Links */}
+      <Group gap="xs" visibleFrom="md">
+        <NavButton to="/products">My Products</NavButton>
+        <NavButton to="/scan-product">Scan Product</NavButton>
+        <NavButton>Recipes</NavButton>
+      </Group>
+
+      {/* Right side buttons */}
+      <Group gap="sm">
+        <Button variant="outline" size="sm" bd="1px solid var(--mantine-color-gray-4)" c="black">
+          My Profile
         </Button>
-        {/* Navigates to the ScanProduct page (/scan-product) */}
-        <Button size="xs" variant="light" onClick={() => navigate('/scan-product')}>
-          Scan Product
-        </Button>
-        {/* Logs the user out and redirects to the Login page (/) */}
-        <Button color="red" size="xs" onClick={handleLogout}>
+        <Button size="sm" color="dark" fw={500} onClick={handleLogout}>
           Logout
         </Button>
       </Group>
-    </Box>
+    </Flex>
   );
 }
