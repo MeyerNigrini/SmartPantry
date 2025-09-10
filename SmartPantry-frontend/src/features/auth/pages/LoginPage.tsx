@@ -132,66 +132,74 @@ export default function LoginPage() {
           >
             {/* Auth card */}
             <Paper withBorder shadow="sm" p="xl" radius="md" maw={420} w="100%">
-              <Stack gap="sm">
-                <Box ta="center" mb="sm">
-                  <Title order={2} mb={4}>
-                    Welcome to SmartPantry
-                  </Title>
-                  <Text c="dimmed" size="sm">
-                    Sign in to manage your pantry and discover AI-powered recipes
-                  </Text>
-                </Box>
+              {/* Form wrapper: allows Enter key to trigger submission in addition to button click */}
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  handleLogin();
+                }}
+              >
+                <Stack gap="sm">
+                  <Box ta="center" mb="sm">
+                    <Title order={2} mb={4}>
+                      Welcome to SmartPantry
+                    </Title>
+                    <Text c="dimmed" size="sm">
+                      Sign in to manage your pantry and discover AI-powered recipes
+                    </Text>
+                  </Box>
 
-                {/* Email field */}
-                <TextInput
-                  label="Email"
-                  placeholder="Enter your email"
-                  value={email}
-                  onChange={(e) => setEmail(e.currentTarget.value)}
-                  leftSection={<IconMail size={16} />}
-                  autoComplete="email"
-                />
+                  {/* Email field */}
+                  <TextInput
+                    label="Email"
+                    placeholder="Enter your email"
+                    value={email}
+                    onChange={(e) => setEmail(e.currentTarget.value)}
+                    leftSection={<IconMail size={16} />}
+                    autoComplete="email"
+                  />
 
-                {/* Password field */}
-                <PasswordInput
-                  label="Password"
-                  placeholder="Enter your password"
-                  value={password}
-                  onChange={(e) => setPassword(e.currentTarget.value)}
-                  leftSection={<IconLock size={16} />}
-                  autoComplete="current-password"
-                />
+                  {/* Password field */}
+                  <PasswordInput
+                    label="Password"
+                    placeholder="Enter your password"
+                    value={password}
+                    onChange={(e) => setPassword(e.currentTarget.value)}
+                    leftSection={<IconLock size={16} />}
+                    autoComplete="current-password"
+                  />
 
-                {/* Forgot Password link */}
-                <Group justify="flex-end" mt={-6}>
-                  <Anchor href="#" underline="hover" fz="sm" c="dimmed">
-                    Forgot password?
-                  </Anchor>
-                </Group>
+                  {/* Forgot Password link */}
+                  <Group justify="flex-end" mt={-6}>
+                    <Anchor href="#" underline="hover" fz="sm" c="dimmed">
+                      Forgot password?
+                    </Anchor>
+                  </Group>
 
-                {/* Primary action: Sign In */}
-                <Button
-                  fullWidth
-                  loading={submitting}
-                  disabled={submitting || !email || !password}
-                  onClick={handleLogin}
-                >
-                  Sign in
-                </Button>
-
-                {/* Registration link */}
-                <Text ta="center" size="sm" c="dimmed">
-                  Don&apos;t have an account?{' '}
-                  <Anchor
-                    component="button"
-                    type="button"
-                    underline="hover"
-                    onClick={() => navigate('/register')}
+                  {/* Primary action: Sign In */}
+                  <Button
+                    fullWidth
+                    type="submit"
+                    loading={submitting}
+                    disabled={submitting || !email || !password}
                   >
-                    Sign up
-                  </Anchor>
-                </Text>
-              </Stack>
+                    Sign in
+                  </Button>
+
+                  {/* Registration link */}
+                  <Text ta="center" size="sm" c="dimmed">
+                    Don&apos;t have an account?{' '}
+                    <Anchor
+                      component="button"
+                      type="button"
+                      underline="hover"
+                      onClick={() => navigate('/register')}
+                    >
+                      Sign up
+                    </Anchor>
+                  </Text>
+                </Stack>
+              </form>
             </Paper>
           </Box>
         </Grid.Col>

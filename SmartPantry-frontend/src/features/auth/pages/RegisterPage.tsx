@@ -15,7 +15,6 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { IconMail, IconLock, IconUser } from '@tabler/icons-react';
 
-
 import { register } from '../services/authService';
 
 // Notification helpers
@@ -80,7 +79,7 @@ export default function RegisterPage() {
     }
   };
 
-return (
+  return (
     // --- Full-height split layout
     <Box mih="100vh">
       <Grid gutter={0}>
@@ -101,8 +100,7 @@ return (
               pos="absolute"
               inset={0}
               style={{
-                background:
-                  'linear-gradient(135deg, rgba(3,2,19,0.20), rgba(3,2,19,0.40))',
+                background: 'linear-gradient(135deg, rgba(3,2,19,0.20), rgba(3,2,19,0.40))',
               }}
             />
             {/* Centered messaging */}
@@ -117,8 +115,8 @@ return (
                   Start Your Culinary Journey
                 </Title>
                 <Text size="lg" style={{ opacity: 0.9 }}>
-                  Join thousands of home cooks who are revolutionizing their kitchens with
-                  smart inventory management and AI-powered recipe discovery.
+                  Join thousands of home cooks who are revolutionizing their kitchens with smart
+                  inventory management and AI-powered recipe discovery.
                 </Text>
               </Box>
             </Box>
@@ -138,83 +136,92 @@ return (
             }}
           >
             <Paper withBorder shadow="sm" p="xl" radius="md" maw={520} w="100%">
-              <Stack gap="sm">
-                {/* Header */}
-                <Box ta="center" mb="sm">
-                  <Title order={2} mb={4}>
-                    Join SmartPantry
-                  </Title>
-                  <Text c="dimmed" size="sm">
-                    Create your account to start building your smart pantry
+              {/* Form wrapper: allows Enter key to submit registration */}
+              <form
+                onSubmit={(e) => {
+                  // Prevent full page reload, run React handler instead
+                  e.preventDefault();
+                  handleRegister();
+                }}
+              >
+                <Stack gap="sm">
+                  {/* Header */}
+                  <Box ta="center" mb="sm">
+                    <Title order={2} mb={4}>
+                      Join SmartPantry
+                    </Title>
+                    <Text c="dimmed" size="sm">
+                      Create your account to start building your smart pantry
+                    </Text>
+                  </Box>
+
+                  {/* Name fields */}
+                  <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md">
+                    <TextInput
+                      label="First Name"
+                      placeholder="First name"
+                      value={firstName}
+                      onChange={(e) => setFirstName(e.currentTarget.value)}
+                      leftSection={<IconUser size={16} />}
+                      autoComplete="given-name"
+                    />
+                    <TextInput
+                      label="Last Name"
+                      placeholder="Last name"
+                      value={lastName}
+                      onChange={(e) => setLastName(e.currentTarget.value)}
+                      leftSection={<IconUser size={16} />}
+                      autoComplete="family-name"
+                    />
+                  </SimpleGrid>
+
+                  {/* Email */}
+                  <TextInput
+                    label="Email"
+                    placeholder="Enter your email"
+                    value={email}
+                    onChange={(e) => setEmail(e.currentTarget.value)}
+                    leftSection={<IconMail size={16} />}
+                    autoComplete="email"
+                  />
+
+                  {/* Passwords */}
+                  <PasswordInput
+                    label="Password"
+                    placeholder="Create a password"
+                    value={password}
+                    onChange={(e) => setPassword(e.currentTarget.value)}
+                    leftSection={<IconLock size={16} />}
+                    autoComplete="new-password"
+                  />
+                  <PasswordInput
+                    label="Confirm Password"
+                    placeholder="Confirm your password"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.currentTarget.value)}
+                    leftSection={<IconLock size={16} />}
+                    autoComplete="new-password"
+                  />
+
+                  {/* Submit */}
+                  <Button fullWidth type="submit" loading={submitting} disabled={submitting}>
+                    Create Account
+                  </Button>
+
+                  {/* Footer */}
+                  <Text ta="center" size="sm" c="dimmed">
+                    Already have an account?{' '}
+                    <Anchor
+                      component="button"
+                      type="button"
+                      underline="hover"
+                      onClick={() => navigate('/')}
+                    >
+                      Sign in
+                    </Anchor>
                   </Text>
-                </Box>
-
-                {/* Name fields */}
-                <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md">
-                  <TextInput
-                    label="First Name"
-                    placeholder="First name"
-                    value={firstName}
-                    onChange={(e) => setFirstName(e.currentTarget.value)}
-                    leftSection={<IconUser size={16} />}
-                    autoComplete="given-name"
-                  />
-                  <TextInput
-                    label="Last Name"
-                    placeholder="Last name"
-                    value={lastName}
-                    onChange={(e) => setLastName(e.currentTarget.value)}
-                    leftSection={<IconUser size={16} />}
-                    autoComplete="family-name"
-                  />
-                </SimpleGrid>
-
-                {/* Email */}
-                <TextInput
-                  label="Email"
-                  placeholder="Enter your email"
-                  value={email}
-                  onChange={(e) => setEmail(e.currentTarget.value)}
-                  leftSection={<IconMail size={16} />}
-                  autoComplete="email"
-                />
-
-                {/* Passwords */}
-                <PasswordInput
-                  label="Password"
-                  placeholder="Create a password"
-                  value={password}
-                  onChange={(e) => setPassword(e.currentTarget.value)}
-                  leftSection={<IconLock size={16} />}
-                  autoComplete="new-password"
-                />
-                <PasswordInput
-                  label="Confirm Password"
-                  placeholder="Confirm your password"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.currentTarget.value)}
-                  leftSection={<IconLock size={16} />}
-                  autoComplete="new-password"
-                />
-
-                {/* Submit */}
-                <Button
-                  fullWidth
-                  loading={submitting}
-                  disabled={submitting}
-                  onClick={handleRegister}
-                >
-                  Create Account
-                </Button>
-
-                {/* Footer */}
-                <Text ta="center" size="sm" c="dimmed">
-                  Already have an account?{' '}
-                  <Anchor component="button" type="button" underline="hover" onClick={() => navigate('/')}>
-                    Sign in
-                  </Anchor>
-                </Text>
-              </Stack>
+                </Stack>
+              </form>
             </Paper>
           </Box>
         </Grid.Col>
