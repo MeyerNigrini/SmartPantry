@@ -1,13 +1,15 @@
 import { useEffect, useState } from 'react';
-import { Container, Title, Loader, Center, Stack, Button, Text, Group } from '@mantine/core';
-import { GetAllFoodProductsForUser } from '../services/productService';
-import ProductTable from '../components/ProductTable';
-import type { ProductResponse, Recipe } from '../types/productTypes';
+import { Container, Title, Loader, Center, Stack, Button, Group, Card } from '@mantine/core';
+import { GetAllFoodProductsForUser, DeleteFoodProductsForUser } from '../services/productService';
 import { getRecipeFromGemini } from '../services/geminiService';
 import { showCustomNotification } from '../../../components/CustomNotification';
 import { getErrorMessage } from '../../../utils/errorHelpers';
-import { DeleteFoodProductsForUser } from '../services/productService';
 import ConfirmModal from '../../../components/ConfirmModal';
+
+import ProductTable from '../components/ProductTable';
+import RecipeCard from '../components/RecipeCard';
+
+import type { ProductResponse, Recipe } from '../types/productTypes';
 
 export default function ProductListPage() {
   const [products, setProducts] = useState<ProductResponse[]>([]);
@@ -35,6 +37,12 @@ export default function ProductListPage() {
 
   const toggleSelect = (id: string) => {
     setSelectedIds((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
+  };
+
+   const toggleSelectAll = () => {
+    setSelectedIds((prev) =>
+      prev.length === products.length ? [] : products.map((p) => p.id)
+    );
   };
 
   const handleGenerateRecipe = async () => {
@@ -72,8 +80,7 @@ export default function ProductListPage() {
       setDeleting(false);
     }
   };
-
-  return (
+return (
     <Container size="lg" py="md">
       <Stack>
         <Title order={2}>My Pantry Products</Title>
@@ -84,58 +91,52 @@ export default function ProductListPage() {
           </Center>
         ) : (
           <>
-            <ProductTable
-              products={products}
-              selectedIds={selectedIds}
-              onToggleSelect={toggleSelect}
-            />
+            {/* Card wrapper for the table */}
+            <Card shadow="sm" radius="md" withBorder>
+              <ProductTable
+                products={products}
+                selectedIds={selectedIds}
+                onToggleSelect={toggleSelect}
+                onToggleSelectAll={toggleSelectAll}
+              />
 
-            <Group>
-              <Button
-                color="red"
-                disabled={selectedIds.length === 0}
-                loading={deleting}
-                onClick={() => setConfirmOpen(true)}
-              >
-                Delete Selected
-              </Button>
+              {/* Buttons under the table */}
+              <Group mt="md">
+                <Button
+                  color="red.9"
+                  variant="filled"
+                  disabled={selectedIds.length === 0}
+                  loading={deleting}
+                  onClick={() => setConfirmOpen(true)}
+                >
+                  Delete Selected
+                </Button>
 
-              <Button
-                disabled={selectedIds.length === 0}
-                loading={loadingRecipe}
-                onClick={handleGenerateRecipe}
-              >
-                Generate Recipe
-              </Button>
-            </Group>
+                <Button
+                  color="dark"
+                  variant="filled"
+                  disabled={selectedIds.length === 0}
+                  loading={loadingRecipe}
+                  onClick={handleGenerateRecipe}
+                >
+                  Generate Recipe
+                </Button>
+              </Group>
+            </Card>
 
-            {recipe && (
-              <Stack mt="md" p="md" style={{ backgroundColor: '#f8f9fa', borderRadius: 8 }}>
-                <Title order={4}>{recipe.title}</Title>
-                <Text fw={500}>Ingredients:</Text>
-                <ul>
-                  {recipe.ingredients.map((item, i) => (
-                    <li key={i}>{item}</li>
-                  ))}
-                </ul>
-                <Text fw={500}>Instructions:</Text>
-                <ol>
-                  {recipe.instructions.map((step, i) => (
-                    <li key={i}>{step}</li>
-                  ))}
-                </ol>
-              </Stack>
-            )}
+            {/* Recipe card */}
+            {recipe && <RecipeCard recipe={recipe} />}
           </>
         )}
       </Stack>
+
       <ConfirmModal
         opened={confirmOpen}
         onClose={() => setConfirmOpen(false)}
         title="Delete Products"
         message={`Are you sure you want to delete ${selectedIds.length} selected product(s)?`}
-        confirmLabel="Yes, Delete"
-        confirmColor="red"
+        confirmLabel="Delete"
+        confirmColor="red.9"
         onConfirm={handleDeleteSelected}
         cancelLabel="Cancel"
         cancelColor="gray"
