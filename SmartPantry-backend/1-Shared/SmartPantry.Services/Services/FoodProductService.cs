@@ -4,6 +4,7 @@ using SmartPantry.Core.Entities;
 using SmartPantry.Core.Exceptions;
 using SmartPantry.Core.Interfaces.Repositories;
 using SmartPantry.Core.Interfaces.Services;
+using SmartPantry.Core.Enums;
 
 namespace SmartPantry.Services.Services
 {
@@ -11,6 +12,7 @@ namespace SmartPantry.Services.Services
     {
         private readonly IFoodProductRepository _repository;
         private readonly ILogger<FoodProductService> _logger;
+        private const int ExpiringThresholdDays = 7;
 
         public FoodProductService(
             IFoodProductRepository repository,
@@ -19,6 +21,20 @@ namespace SmartPantry.Services.Services
         {
             _repository = repository;
             _logger = logger;
+        }
+
+        // --- Status calculation helper ---
+        private FoodProductStatus ComputeStatus(DateTime expirationDate)
+        {
+            var today = DateTime.UtcNow.Date;
+
+            if (expirationDate < today)
+                return FoodProductStatus.Expired;
+
+            if ((expirationDate - today).TotalDays <= ExpiringThresholdDays)
+                return FoodProductStatus.Expiring;
+
+            return FoodProductStatus.Fresh;
         }
 
         public async Task AddFoodProductForUserAsync(FoodProductAddDTO dto, Guid userId)
@@ -38,6 +54,7 @@ namespace SmartPantry.Services.Services
                 Quantity = dto.Quantity,
                 Brands = dto.Brands,
                 Categories = dto.Categories,
+                ExpirationDate = dto.ExpirationDate.Date,
                 AddedDate = DateTime.UtcNow,
             };
 
@@ -70,6 +87,8 @@ namespace SmartPantry.Services.Services
                     Quantity = p.Quantity,
                     Brands = p.Brands,
                     Categories = p.Categories,
+                    ExpirationDate = p.ExpirationDate,
+                    Status = ComputeStatus(p.ExpirationDate).ToString(),
                     AddedDate = p.AddedDate,
                 });
             }

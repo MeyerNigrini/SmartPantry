@@ -27,6 +27,7 @@ namespace SmartPantry.Core.Entities
 
         [MaxLength(100)]
         public string Categories { get; set; }
+        public DateTime ExpirationDate { get; set; }
         public DateTime AddedDate { get; set; }
 
         public ICollection<MealSuggestionFoodProductEntity> MealSuggestionFoodProducts { get; set; } =

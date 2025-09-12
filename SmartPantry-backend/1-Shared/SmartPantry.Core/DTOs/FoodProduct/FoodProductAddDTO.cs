@@ -20,5 +20,7 @@ namespace SmartPantry.Core.DTOs.FoodProduct
 
         [MaxLength(100)]
         public string Categories { get; set; }
+        [Required]
+        public DateTime ExpirationDate { get; set; }
     }
 }

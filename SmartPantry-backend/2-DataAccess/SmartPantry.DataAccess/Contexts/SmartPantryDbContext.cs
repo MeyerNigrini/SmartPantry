@@ -37,6 +37,7 @@ namespace SmartPantry.DataAccess.Contexts
                 entity.Property(f => f.Brands).HasColumnType("nvarchar(100)");
                 entity.Property(f => f.Categories).HasColumnType("nvarchar(100)");
                 entity.Property(f => f.AddedDate).HasColumnType("datetime2");
+                entity.Property(f => f.ExpirationDate).HasColumnType("date");
 
                 // User Relationship
                 entity
