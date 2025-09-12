@@ -33,6 +33,8 @@ export default function ProductTable({
           <Table.Th>Quantity</Table.Th>
           <Table.Th>Brand</Table.Th>
           <Table.Th>Category</Table.Th>
+          <Table.Th>Status</Table.Th>
+          <Table.Th>Expires</Table.Th>
         </Table.Tr>
       </Table.Thead>
 
@@ -57,6 +59,8 @@ export default function ProductTable({
             <Table.Td>{p.quantity}</Table.Td>
             <Table.Td>{p.brands}</Table.Td>
             <Table.Td>{p.categories}</Table.Td>
+            <Table.Td>{p.status}</Table.Td>
+            <Table.Td>{p.expirationDate.split('T')[0]}</Table.Td>
           </Table.Tr>
         ))}
       </Table.Tbody>

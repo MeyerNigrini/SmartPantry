@@ -44,6 +44,11 @@ export default function ProductForm({ product, onChange }: Props) {
         value={product.categories}
         onChange={(e) => handleChange('categories', e.currentTarget.value)}
       />
+      <TextInput
+        label="Expiration Date"
+        value={product.expirationDate}
+        onChange={(e) => handleChange('expirationDate', e.currentTarget.value)}
+      />
     </Stack>
   );
 }

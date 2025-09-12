@@ -39,10 +39,8 @@ export default function ProductListPage() {
     setSelectedIds((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
   };
 
-   const toggleSelectAll = () => {
-    setSelectedIds((prev) =>
-      prev.length === products.length ? [] : products.map((p) => p.id)
-    );
+  const toggleSelectAll = () => {
+    setSelectedIds((prev) => (prev.length === products.length ? [] : products.map((p) => p.id)));
   };
 
   const handleGenerateRecipe = async () => {
@@ -80,7 +78,7 @@ export default function ProductListPage() {
       setDeleting(false);
     }
   };
-return (
+  return (
     <Container size="lg" py="md">
       <Stack>
         <Title order={2}>My Pantry Products</Title>

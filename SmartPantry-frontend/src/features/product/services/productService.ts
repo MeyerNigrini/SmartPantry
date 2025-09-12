@@ -12,6 +12,7 @@ export async function fetchProductByBarcode(barcode: string): Promise<ProductAdd
     quantity: raw.quantity,
     brands: raw.brands,
     categories: raw.categories,
+    expirationDate: new Date().toISOString().split('T')[0],
   };
 }
 
@@ -23,6 +24,7 @@ export async function AddFoodProductForUser(product: ProductAdd): Promise<void> 
     quantity: product.quantity,
     brands: product.brands,
     categories: product.categories,
+    expirationDate: product.expirationDate,
   };
   await api.post('/FoodProduct/addFoodProductForUser', dto);
 }

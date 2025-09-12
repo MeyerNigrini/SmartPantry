@@ -19,6 +19,7 @@ export default function ScanProductPage() {
     quantity: '',
     brands: '',
     categories: '',
+    expirationDate: '',
   });
 
   const handleScan = (scanned: string) => {
@@ -41,6 +42,7 @@ export default function ScanProductPage() {
         quantity: '',
         brands: '',
         categories: '',
+        expirationDate: '',
       });
 
       showCustomNotification({

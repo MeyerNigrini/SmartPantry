@@ -4,6 +4,7 @@ export type ProductAdd = {
   quantity: string;
   brands: string;
   categories: string;
+  expirationDate: string;
 };
 
 export type ProductResponse = {
@@ -12,6 +13,8 @@ export type ProductResponse = {
   quantity: string;
   brands: string;
   categories: string;
+  expirationDate: string;
+  status: string;
   addedDate: string;
 };
 
