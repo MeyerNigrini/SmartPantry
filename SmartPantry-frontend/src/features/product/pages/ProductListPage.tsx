@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Container, Title, Loader, Center, Stack, Button, Group, Card } from '@mantine/core';
+import { Container, Title, Loader, Center, Stack, Button, Group, Card, Text } from '@mantine/core';
 import { GetAllFoodProductsForUser, DeleteFoodProductsForUser } from '../services/productService';
 import { getRecipeFromGemini } from '../services/geminiService';
 import { showCustomNotification } from '../../../components/CustomNotification';
@@ -12,15 +12,20 @@ import RecipeCard from '../components/RecipeCard';
 import type { ProductResponse, Recipe } from '../types/productTypes';
 
 export default function ProductListPage() {
-  const [products, setProducts] = useState<ProductResponse[]>([]);
-  const [selectedIds, setSelectedIds] = useState<string[]>([]);
-  const [loading, setLoading] = useState(true);
+  // --- State management ---
+  const [products, setProducts] = useState<ProductResponse[]>([]); // All products fetched for the user
+  const [selectedIds, setSelectedIds] = useState<string[]>([]); // Currently selected product IDs
+  const [loading, setLoading] = useState(true); // Loading indicator for fetching products
 
-  const [recipe, setRecipe] = useState<Recipe | null>(null);
-  const [loadingRecipe, setLoadingRecipe] = useState(false);
-  const [deleting, setDeleting] = useState(false);
-  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [recipe, setRecipe] = useState<Recipe | null>(null); // Generated recipe
+  const [loadingRecipe, setLoadingRecipe] = useState(false); // Loading indicator for recipe generation
+  const [deleting, setDeleting] = useState(false); // Loading indicator for deletion
+  const [confirmOpen, setConfirmOpen] = useState(false); // State for confirm modal
 
+  const [visibleCount, setVisibleCount] = useState(0); // Number of filtered/visible products
+  const [totalCount, setTotalCount] = useState(0); // Total number of products
+
+  // --- Fetch all products when page loads ---
   useEffect(() => {
     GetAllFoodProductsForUser()
       .then((data) => {
@@ -35,14 +40,17 @@ export default function ProductListPage() {
       .finally(() => setLoading(false));
   }, []);
 
+  // --- Toggle selection for a single product ---
   const toggleSelect = (id: string) => {
     setSelectedIds((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
   };
 
-  const toggleSelectAll = () => {
-    setSelectedIds((prev) => (prev.length === products.length ? [] : products.map((p) => p.id)));
+  // --- Toggle select all for currently visible products ---
+  const toggleSelectAll = (ids: string[]) => {
+    setSelectedIds((prev) => (prev.length === ids.length ? [] : ids));
   };
 
+  // --- Generate recipe from selected products ---
   const handleGenerateRecipe = async () => {
     try {
       setLoadingRecipe(true);
@@ -58,6 +66,7 @@ export default function ProductListPage() {
     }
   };
 
+  // --- Delete selected products ---
   const handleDeleteSelected = async () => {
     if (selectedIds.length === 0) return;
     setDeleting(true);
@@ -78,56 +87,70 @@ export default function ProductListPage() {
       setDeleting(false);
     }
   };
+
   return (
     <Container size="lg" py="md">
       <Stack>
         <Title order={2}>My Pantry Products</Title>
-
+        <Text>Manage your ingredients and discover delicious recipes</Text>
         {loading ? (
+          // --- Show loading state while fetching products ---
           <Center>
             <Loader />
           </Center>
         ) : (
           <>
-            {/* Card wrapper for the table */}
+            {/* Card wrapper around the product table */}
             <Card shadow="sm" radius="md" withBorder>
               <ProductTable
                 products={products}
                 selectedIds={selectedIds}
                 onToggleSelect={toggleSelect}
                 onToggleSelectAll={toggleSelectAll}
+                onVisibleCountChange={(visible, total) => {
+                  setVisibleCount(visible);
+                  setTotalCount(total);
+                }}
               />
 
-              {/* Buttons under the table */}
+              {/* --- Actions below the table --- */}
               <Group mt="md">
-                <Button
-                  color="red.9"
-                  variant="filled"
-                  disabled={selectedIds.length === 0}
-                  loading={deleting}
-                  onClick={() => setConfirmOpen(true)}
-                >
-                  Delete Selected
-                </Button>
+                <Group>
+                  <Button
+                    color="red.9"
+                    variant="filled"
+                    disabled={selectedIds.length === 0}
+                    loading={deleting}
+                    onClick={() => setConfirmOpen(true)}
+                  >
+                    Delete Selected ({selectedIds.length})
+                  </Button>
 
-                <Button
-                  color="dark"
-                  variant="filled"
-                  disabled={selectedIds.length === 0}
-                  loading={loadingRecipe}
-                  onClick={handleGenerateRecipe}
-                >
-                  Generate Recipe
-                </Button>
+                  <Button
+                    color="dark"
+                    variant="filled"
+                    disabled={selectedIds.length === 0}
+                    loading={loadingRecipe}
+                    onClick={handleGenerateRecipe}
+                  >
+                    Generate Recipe ({selectedIds.length} items)
+                  </Button>
+                </Group>
+
+                {/* --- Product counter (filtered vs total) --- */}
+                <Text size="sm" c="dimmed">
+                  Showing {visibleCount} of {totalCount} products
+                </Text>
               </Group>
             </Card>
 
-            {/* Recipe card */}
+            {/* --- Generated recipe output --- */}
             {recipe && <RecipeCard recipe={recipe} />}
           </>
         )}
       </Stack>
 
+      {/* --- Confirm modal for deletion --- */}
       <ConfirmModal
         opened={confirmOpen}
         onClose={() => setConfirmOpen(false)}

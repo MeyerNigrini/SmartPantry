@@ -29,7 +29,7 @@ export default function ProductForm({ product, onChange }: Props) {
         value={product.productName}
         onChange={(e) => handleChange('productName', e.currentTarget.value)}
       />
-      {/* Input for quantity (e.g. "1L", "500g") */}
+      {/* Input for quantity */}
       <TextInput
         label="Quantity"
         value={product.quantity}
