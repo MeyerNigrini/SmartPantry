@@ -1,5 +1,8 @@
-import { Stack, TextInput } from '@mantine/core';
+import { Select, Stack, TextInput } from '@mantine/core';
+import { DateInput } from '@mantine/dates';
+import dayjs from 'dayjs';
 import type { ProductAdd } from '../types/productTypes';
+import { FOOD_CATEGORIES } from '../types/constants/foodCategories';
 
 type Props = {
   product: ProductAdd;
@@ -39,15 +42,23 @@ export default function ProductForm({ product, onChange }: Props) {
         onChange={(e) => handleChange('brands', e.currentTarget.value)}
       />
       {/* Input for product categories */}
-      <TextInput
-        label="Categories"
+      <Select
+        label="Category"
+        data={FOOD_CATEGORIES}
         value={product.categories}
-        onChange={(e) => handleChange('categories', e.currentTarget.value)}
+        onChange={(value) => handleChange('categories', value || '')}
+        placeholder="Select category"
+        searchable
       />
-      <TextInput
+      {/* Date picker for expiration date */}
+      <DateInput
         label="Expiration Date"
-        value={product.expirationDate}
-        onChange={(e) => handleChange('expirationDate', e.currentTarget.value)}
+        value={product.expirationDate ? new Date(product.expirationDate) : null}
+        onChange={(date) =>
+          handleChange('expirationDate', date ? dayjs(date).format('YYYY-MM-DD') : '')
+        }
+        placeholder="Select date"
+        valueFormat="YYYY-MM-DD"
       />
     </Stack>
   );
