@@ -2,6 +2,7 @@
 import { Button, Flex, Group, Title, type ButtonProps } from '@mantine/core';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { IconLogout } from '@tabler/icons-react';
 
 type NavButtonProps = ButtonProps & {
   to?: string;
@@ -66,7 +67,13 @@ export default function Navbar() {
 
       {/* Right side buttons */}
 
-      <Button size="sm" color="dark" fw={500} onClick={handleLogout}>
+      <Button
+        leftSection={<IconLogout size={16} />}
+        size="sm"
+        color="dark"
+        fw={500}
+        onClick={handleLogout}
+      >
         Logout
       </Button>
     </Flex>
