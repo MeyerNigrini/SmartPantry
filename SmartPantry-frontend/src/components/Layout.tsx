@@ -8,7 +8,7 @@ export default function Layout() {
     <>
       {/* Persistent navigation bar displayed on all pages */}
       <Navbar />
-      <Container mt="md">
+      <Container fluid mt="md" style={{ maxWidth: '100%' }}>
         <Outlet />
       </Container>
     </>

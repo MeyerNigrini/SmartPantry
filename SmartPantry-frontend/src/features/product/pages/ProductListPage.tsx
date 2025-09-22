@@ -89,9 +89,9 @@ export default function ProductListPage() {
   };
 
   return (
-    <Container size="lg" py="md">
+    <Container size="xl" py="md">
       <Stack>
-        <Title order={2}>My Pantry Products</Title>
+        <Title order={2}>My Smart Pantry</Title>
         <Text>Manage your ingredients and discover delicious recipes</Text>
         {loading ? (
           // --- Show loading state while fetching products ---

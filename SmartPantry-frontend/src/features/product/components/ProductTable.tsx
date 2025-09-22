@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import type { ProductResponse } from '../types/productTypes';
 import { FOOD_CATEGORIES } from '../types/constants/foodCategories';
 import { renderStatusBadge } from '../utils/renderStatusBadge';
+import { IconFilter, IconSearch } from '@tabler/icons-react';
 
 type Props = {
   products: ProductResponse[];
@@ -55,26 +56,38 @@ export default function ProductTable({
   return (
     <div>
       {/* --- Filter controls (search, category, status) --- */}
-      <Group mb="sm" gap="md" grow>
-        <TextInput
-          placeholder="Search products..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.currentTarget.value)}
-        />
-        <Select
-          placeholder="All Categories"
-          data={['All Categories', ...FOOD_CATEGORIES]}
-          value={categoryFilter}
-          onChange={setCategoryFilter}
-          clearable
-        />
-        <Select
-          placeholder="All Status"
-          data={['All Status', 'Fresh', 'Expiring', 'Expired']}
-          value={statusFilter}
-          onChange={setStatusFilter}
-          clearable
-        />
+      <Group mb="sm" justify="space-between">
+        <Text>My Pantry Products</Text>
+        <Group gap="md">
+          <TextInput
+            variant="filled"
+            placeholder="Search products..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.currentTarget.value)}
+            leftSection={<IconSearch size={16} />}
+            w={200}
+          />
+          <Select
+            variant="filled"
+            placeholder="All Categories"
+            data={['All Categories', ...FOOD_CATEGORIES]}
+            value={categoryFilter}
+            onChange={setCategoryFilter}
+            clearable
+            leftSection={<IconFilter size={16} />}
+            w={180}
+          />
+          <Select
+            variant="filled"
+            placeholder="All Status"
+            data={['All Status', 'Fresh', 'Expiring', 'Expired']}
+            value={statusFilter}
+            onChange={setStatusFilter}
+            clearable
+            leftSection={<IconFilter size={16} />}
+            w={150}
+          />
+        </Group>
       </Group>
 
       {/* --- Product table --- */}
@@ -97,7 +110,7 @@ export default function ProductTable({
                 onChange={() => onToggleSelectAll(filteredProducts.map((p) => p.id))}
               />
             </Table.Th>
-            <Table.Th>Product Name</Table.Th>
+            <Table.Th>Product</Table.Th>
             <Table.Th>Quantity</Table.Th>
             <Table.Th>Brand</Table.Th>
             <Table.Th>Category</Table.Th>

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Title, Stack, Text, Button, TextInput, Group, Flex } from '@mantine/core';
+import { Title, Stack, Text, Button, TextInput, Group, Flex, Container } from '@mantine/core';
 import BarcodeScanner from '../components/BarcodeScanner';
 import ProductForm from '../components/ProductForm';
 import { fetchProductByBarcode, AddFoodProductForUser } from '../services/productService';
@@ -70,7 +70,7 @@ export default function ScanProductPage() {
   };
 
   return (
-    <Stack>
+    <Container>
       <Title>Scan and Add Product</Title>
       <Flex align="start" gap="xl">
         {/* Left side: Scanner */}
@@ -99,6 +99,6 @@ export default function ScanProductPage() {
           </Button>
         </Stack>
       </Flex>
-    </Stack>
+    </Container>
   );
 }
