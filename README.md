@@ -21,7 +21,7 @@ It integrates **Gemini AI** for image-based product extraction and recipe genera
 ## 🧩 Core Features
 
 ### 🔍 Product Capture (AI Vision)
-Upload a grocery item photo — the app uses **Gemini Vision AI** to extract product name, quantity, and brand automatically.
+Upload a grocery item photo — the app uses **Gemini Vision AI** to extract product name, quantity, brand and expiration date automatically.
 
 ### 📦 Inventory Management
 View and organize pantry items with live updates, search, and filtering.
@@ -81,7 +81,7 @@ SmartPantry
 
 ### 🖥 Backend
 1. Navigate to `SmartPantry-backend/3-API`
-2. Update your `appsettings.json` connection string for local SQL Server.
+2. Update your `appsettings.Development.json` connection string for local SQL Server.
 3. Run database migrations:
    
    ```
@@ -148,17 +148,21 @@ This repository includes a **Bruno API collection** for testing SmartPantry back
 
 
 ## 📸 Screenshots
-
-| Login / Register | Product Capture | Inventory | Recipe Generation |
-|:----------------:|:----------------:|:----------:|:-----------------:|
-| ![Login](docs/screenshots/login.png) | ![Capture](docs/screenshots/capture.png) | ![Inventory](docs/screenshots/inventory.png) | ![Recipes](docs/screenshots/recipes.png) |
+### Login:
+![Login](docs/screenshots/login.png) 
+### Register:
+![Register](docs/screenshots/register.png)
+### Product Scan:
+![Capture](docs/screenshots/scan.png)
+![Capture](docs/screenshots/scan_v2.png)
+### Products / Recipe:
+![Inventory](docs/screenshots/myProducts.png)
 
 
 
 ## 🚧 Planned Improvements
 
 - ☁️ Cloud deployment via **Azure App Service + SQL Database**
-- 🧾 Shopping list generator & meal planning
 - 📱 Mobile PWA support
 - 👤 User profile management
 - 🗂 AI model selector (Gemini 1.5 Pro vs 1.5 Flash)
