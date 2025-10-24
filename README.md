@@ -6,6 +6,8 @@
 [![Entity Framework](https://img.shields.io/badge/ORM-Entity%20Framework%20Core-512BD4?logo=nuget)](https://learn.microsoft.com/en-us/ef/core/)
 [![Gemini AI](https://img.shields.io/badge/AI-Google%20Gemini-4285F4?logo=google)](https://ai.google.dev/)
 
+### Watch the Demo: https://youtu.be/VDaohs2Rv8I
+
 SmartPantry is a full-stack web application that helps users manage their food inventory intelligently.  
 Using **Google’s Gemini AI**, it extracts product details from uploaded images and generates personalized recipes based on what’s in your pantry.
 
