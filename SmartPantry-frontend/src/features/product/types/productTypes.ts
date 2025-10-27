@@ -23,3 +23,10 @@ export type Recipe = {
   ingredients: string[];
   instructions: string[];
 };
+
+export type ProductVisionExtract = {
+  productName: string;
+  quantity?: string;
+  brand?: string;
+  categories?: string[];
+};

@@ -123,7 +123,7 @@ namespace SmartPantry.WebApi.Controllers
                 _logger.LogError(ex, "Gemini API failed in ExtractProduct.");
                 return StatusCode(
                     502,
-                    new { message = "AI service is currently unavailable. Please try again later." }
+                    new { message = ex.Message }
                 );
             }
             catch (Exception ex)

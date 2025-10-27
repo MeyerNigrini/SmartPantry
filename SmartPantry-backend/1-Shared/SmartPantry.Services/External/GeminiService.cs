@@ -176,8 +176,20 @@ namespace SmartPantry.Services.External
                         new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
                     );
 
-                    return result
-                        ?? throw new ExternalServiceException("Failed to parse Gemini JSON.");
+                    if (result == null)
+                        throw new ExternalServiceException("Failed to parse Gemini JSON response.");
+
+                    // Reject empty results
+                    var isEmpty =
+                        string.IsNullOrWhiteSpace(result.ProductName)
+                        && string.IsNullOrWhiteSpace(result.Quantity)
+                        && string.IsNullOrWhiteSpace(result.Brand)
+                        && (result.Categories == null || result.Categories.Count == 0);
+
+                    if (isEmpty)
+                        throw new ExternalServiceException("AI did not detect any product details. Please retake the photo.");
+
+                    return result;
                 },
                 "ExtractProductFromImageAsync"
             );
