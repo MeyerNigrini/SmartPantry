@@ -1,18 +1,14 @@
 import { useState } from 'react';
-import { Title, Stack, Text, Button, TextInput, Group, Flex, Container } from '@mantine/core';
-import BarcodeScanner from '../components/BarcodeScanner';
+import { Container, Title, Text, Stack, Group, Button, Stepper, Center, Box } from '@mantine/core';
+import { ArrowLeft } from 'lucide-react';
+import ProductCapture from '../components/ProductCapture';
 import ProductForm from '../components/ProductForm';
-import { fetchProductByBarcode, AddFoodProductForUser } from '../services/productService';
-import type { ProductAdd } from '../types/productTypes';
-
-// Notification helpers
+import { AddFoodProductForUser } from '../services/productService';
 import { showCustomNotification } from '../../../components/CustomNotification';
 import { getErrorMessage } from '../../../utils/errorHelpers';
+import type { ProductAdd, ProductVisionExtract } from '../types/productTypes';
 
 export default function ScanProductPage() {
-  const [barcode, setBarcode] = useState('');
-  const [notFound, setNotFound] = useState(false);
-
   const [product, setProduct] = useState<ProductAdd>({
     barcode: '',
     productName: '',
@@ -21,45 +17,26 @@ export default function ScanProductPage() {
     categories: '',
     expirationDate: '',
   });
+  const [activeStep, setActiveStep] = useState(0);
 
-  const handleScan = (scanned: string) => {
-    setBarcode(scanned);
-    handleSearch(scanned);
-  };
+  const applyExtract = (extracted: ProductVisionExtract) => {
+    // Map categories[] to comma-separated string
+    const categoriesCsv = (extracted.categories ?? []).filter(Boolean).join(', ');
 
-  const handleSearch = async (code = barcode) => {
-    if (!code) return;
-
-    try {
-      const data = await fetchProductByBarcode(code);
-      setProduct(data);
-      setNotFound(false);
-    } catch (err) {
-      setNotFound(true);
-      setProduct({
-        barcode: code,
-        productName: '',
-        quantity: '',
-        brands: '',
-        categories: '',
-        expirationDate: '',
-      });
-
-      showCustomNotification({
-        message: getErrorMessage(err, 'Product not found or lookup failed.'),
-        type: 'error',
-      });
-    }
+    setProduct((prev) => ({
+      ...prev,
+      productName: extracted.productName || prev.productName,
+      quantity: extracted.quantity || prev.quantity,
+      brands: extracted.brand || prev.brands,
+      categories: categoriesCsv || prev.categories,
+    }));
+    setActiveStep(1);
   };
 
   const handleSave = async () => {
     try {
       await AddFoodProductForUser(product);
-
-      showCustomNotification({
-        message: 'Product saved successfully!',
-        type: 'success',
-      });
+      showCustomNotification({ message: 'Product saved successfully!', type: 'success' });
     } catch (err) {
       console.error(err);
       showCustomNotification({
@@ -70,35 +47,56 @@ export default function ScanProductPage() {
   };
 
   return (
-    <Container>
-      <Title>Scan and Add Product</Title>
-      <Flex align="start" gap="xl">
-        {/* Left side: Scanner */}
-        <Stack flex={1}>
-          <BarcodeScanner onScan={handleScan} />
-          <Group align="end" grow w="100%">
-            <TextInput
-              placeholder="Enter or scan a barcode"
-              value={barcode}
-              onChange={(e) => setBarcode(e.currentTarget.value)}
-            />
-            <Button onClick={() => handleSearch()}>Search Product</Button>
-          </Group>
-        </Stack>
-
-        {/* Right side: Form and controls */}
-        <Stack flex={2}>
-          {notFound && (
-            <Text color="red">Product not found. Please enter the details manually.</Text>
-          )}
-
-          <ProductForm product={product} onChange={setProduct} />
-
-          <Button onClick={handleSave} disabled={!product.productName}>
-            Save Product
+    <Container size="lg" py="xl">
+      {/* Header */}
+      <Group mb="xl" justify="space-between" align="center" wrap="nowrap">
+        {activeStep === 1 ? (
+          <Button
+            variant="subtle"
+            leftSection={<ArrowLeft size={20} strokeWidth={2.2} />}
+            onClick={() => setActiveStep(0)} // ✅ Go back to AI Recognition
+            color="dark"
+          >
+            <Text visibleFrom="xs" fw={600} fz="md">
+              Back
+            </Text>
           </Button>
+        ) : (
+          <Box w={100} /> // ✅ keeps alignment consistent when button hidden
+        )}
+        <Stack gap={0}>
+          <Title order={2}>Scan and Add Product</Title>
+          <Text c="dimmed" size="sm">
+            {activeStep === 0
+              ? 'Use AI to identify your product from an image'
+              : 'Review and edit product details'}
+          </Text>
         </Stack>
-      </Flex>
+        <Box w={40} /> {/* Spacer for alignment */}
+      </Group>
+
+      {/* Step indicator */}
+      <Stepper active={activeStep} onStepClick={setActiveStep} size="sm" mb="xl" color="dark">
+        <Stepper.Step label={<Text visibleFrom="xs">AI Recognition</Text>} />
+        <Stepper.Step label={<Text visibleFrom="xs">Product Details</Text>} />
+      </Stepper>
+
+      {/* Step content */}
+      {activeStep === 0 && (
+        <Center>
+          <Box w="100%" maw={700}>
+            <ProductCapture onExtract={applyExtract} onSkip={() => setActiveStep(1)} />
+          </Box>
+        </Center>
+      )}
+
+      {activeStep === 1 && (
+        <Center>
+          <Box w="100%" maw={600}>
+            <ProductForm product={product} onChange={setProduct} onSave={handleSave} />
+          </Box>
+        </Center>
+      )}
     </Container>
   );
 }

@@ -1,0 +1,10 @@
+/* --- AI success banner box --- */
+.aiBanner {
+  border: 1px solid var(--mantine-color-green-3);
+  border-radius: 8px;
+}
+
+/* --- Bottom action section --- */
+.actionSection {
+  border-top: 1px solid var(--mantine-color-gray-3);
+}
