@@ -1,23 +1,14 @@
 import { useNavigate } from 'react-router-dom';
-import {
-  Box,
-  Button,
-  Card,
-  Center,
-  SimpleGrid,
-  Stack,
-  Text,
-  Title,
-} from '@mantine/core';
+import { Box, Button, Card, Center, SimpleGrid, Stack, Text, Title } from '@mantine/core';
 import { Package, Scan } from 'lucide-react';
 import cardClasses from '../../../styles/common/SharedCard.module.css';
-import classes from '../styles/HomePage.module.css'
+import classes from '../styles/HomePage.module.css';
 
 export default function HomePage() {
   const navigate = useNavigate();
 
   return (
-    <Stack align="center" gap="xl" p="md" >
+    <Stack align="center" gap="xl" p="md">
       {/* Header */}
       <Stack align="center" gap={4}>
         <Title order={2} fw={700}>
@@ -29,13 +20,7 @@ export default function HomePage() {
       </Stack>
 
       {/* Action Cards */}
-      <SimpleGrid
-        cols={{ base: 1, sm: 2 }}
-        spacing="xl"
-        maw={600}
-        w="100%"
-        mt="lg"
-      >
+      <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="xl" maw={600} w="100%" mt="lg">
         {/* Add Product */}
         <Card
           withBorder

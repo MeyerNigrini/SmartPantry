@@ -15,7 +15,7 @@ import {
   SimpleGrid,
 } from '@mantine/core';
 import cardClasses from '../../../styles/common/SharedCard.module.css';
-import classes from '../styles/ProductCapture.module.css'
+import classes from '../styles/ProductCapture.module.css';
 import { Camera, Upload, Lightbulb, CheckCircle, Package, X } from 'lucide-react';
 import { extractProductFromImage } from '../services/geminiService';
 import { showCustomNotification } from '../../../components/CustomNotification';
@@ -103,7 +103,6 @@ export default function ProductCapture({ onExtract, onSkip }: Props) {
     event.target.value = '';
   };
 
-
   return (
     <Stack gap="lg">
       <Card shadow="sm" radius="lg" withBorder>
@@ -149,7 +148,12 @@ export default function ProductCapture({ onExtract, onSkip }: Props) {
                 </Box>
 
                 {/* Stop camera button */}
-                <Button onClick={stopCamera} variant="subtle" radius="xl" className={classes.stopButton}>
+                <Button
+                  onClick={stopCamera}
+                  variant="subtle"
+                  radius="xl"
+                  className={classes.stopButton}
+                >
                   <X size={18} color="white" />
                 </Button>
               </Box>

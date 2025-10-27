@@ -13,7 +13,7 @@ import {
   Divider,
   Grid,
 } from '@mantine/core';
-import classes from '../styles/ProductForm.module.css'
+import classes from '../styles/ProductForm.module.css';
 import { DateInput } from '@mantine/dates';
 import { CheckCircle, Package, Tag, Calendar } from 'lucide-react';
 import dayjs from 'dayjs';
@@ -34,7 +34,6 @@ export default function ProductForm({ product, onChange, onSave, previewUrl, aiD
   const handleChange = (key: keyof ProductAdd, value: string) => {
     onChange({ ...product, [key]: value });
   };
-
 
   return (
     <Card shadow="sm" radius="lg" withBorder>
