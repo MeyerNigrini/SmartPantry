@@ -16,7 +16,7 @@ export const showCustomNotification = ({
   title,
   message,
   type = 'info',
-  autoClose = 4000,
+  autoClose = 6000,
   withCloseButton = true,
 }: CustomNotificationOptions) => {
   const { color, icon, defaultTitle } = getTypeMeta(type);
