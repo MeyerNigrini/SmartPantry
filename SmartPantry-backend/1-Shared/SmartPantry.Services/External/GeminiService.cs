@@ -16,19 +16,6 @@ namespace SmartPantry.Services.External
     /// </summary>
     public class GeminiService : IGeminiService
     {
-        // Centralized instruction for vision requests
-        private const string VisionInstruction = """
-            Return ONLY valid JSON (no markdown) with:
-            {
-              "ProductName": string,
-              "Quantity": string | null,
-              "Brand": string | null,
-              "Categories": string[]
-            }
-            Read visible text on the package (brand, product line, variant, size/quantity).
-            If a field is unknown, use null. For Categories, prefer common food taxonomy terms.
-            """;
-
         private static readonly HashSet<string> AllowedImageMimeTypes = new(
             StringComparer.OrdinalIgnoreCase
         )
@@ -137,6 +124,7 @@ namespace SmartPantry.Services.External
         /// <exception cref="ExternalServiceException">For HTTP, timeout, or parsing issues.</exception>
         public async Task<ProductVisionExtract> ExtractProductFromImageAsync(
             ImagePayload image,
+            string visionInstruction,
             CancellationToken ct = default
         )
         {
@@ -154,7 +142,7 @@ namespace SmartPantry.Services.External
                         parts = new object[]
                         {
                             new { inline_data = new { mime_type = image.MimeType, data = base64 } },
-                            new { text = VisionInstruction },
+                            new { text = visionInstruction },
                         },
                     },
                 },
@@ -184,7 +172,8 @@ namespace SmartPantry.Services.External
                         string.IsNullOrWhiteSpace(result.ProductName)
                         && string.IsNullOrWhiteSpace(result.Quantity)
                         && string.IsNullOrWhiteSpace(result.Brand)
-                        && (result.Categories == null || result.Categories.Count == 0);
+                        && string.IsNullOrWhiteSpace(result.Category)
+                        && string.IsNullOrWhiteSpace(result.ExpirationDate);
 
                     if (isEmpty)
                         throw new ExternalServiceException("AI did not detect any product details. Please retake the photo.");

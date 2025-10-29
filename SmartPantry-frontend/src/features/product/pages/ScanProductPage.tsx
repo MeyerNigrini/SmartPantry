@@ -9,26 +9,26 @@ import { getErrorMessage } from '../../../utils/errorHelpers';
 import type { ProductAdd, ProductVisionExtract } from '../types/productTypes';
 
 export default function ScanProductPage() {
-  const [product, setProduct] = useState<ProductAdd>({
+  const EMPTY_PRODUCT: ProductAdd = {
     barcode: '',
     productName: '',
     quantity: '',
     brands: '',
     categories: '',
     expirationDate: '',
-  });
+  };
+
+  const [product, setProduct] = useState<ProductAdd>(EMPTY_PRODUCT);
   const [activeStep, setActiveStep] = useState(0);
 
   const applyExtract = (extracted: ProductVisionExtract) => {
-    // Map categories[] to comma-separated string
-    const categoriesCsv = (extracted.categories ?? []).filter(Boolean).join(', ');
-
     setProduct((prev) => ({
       ...prev,
       productName: extracted.productName || prev.productName,
       quantity: extracted.quantity || prev.quantity,
       brands: extracted.brand || prev.brands,
-      categories: categoriesCsv || prev.categories,
+      categories: extracted.category || prev.categories,
+      expirationDate: extracted.expirationDate || prev.expirationDate,
     }));
     setActiveStep(1);
   };
@@ -37,6 +37,10 @@ export default function ScanProductPage() {
     try {
       await AddFoodProductForUser(product);
       showCustomNotification({ message: 'Product saved successfully!', type: 'success' });
+
+      // Reset product and return to camera
+      setProduct(EMPTY_PRODUCT);
+      setActiveStep(0);
     } catch (err) {
       console.error(err);
       showCustomNotification({
@@ -54,7 +58,10 @@ export default function ScanProductPage() {
           <Button
             variant="subtle"
             leftSection={<ArrowLeft size={20} strokeWidth={2.2} />}
-            onClick={() => setActiveStep(0)} // ✅ Go back to AI Recognition
+            onClick={() => {
+              setProduct(EMPTY_PRODUCT); // clear form
+              setActiveStep(0); // go back to camera
+            }}
             color="dark"
           >
             <Text visibleFrom="xs" fw={600} fz="md">

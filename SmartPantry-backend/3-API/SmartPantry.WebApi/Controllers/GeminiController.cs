@@ -47,16 +47,25 @@ namespace SmartPantry.WebApi.Controllers
 
                 var formattedIngredients = string.Join("\n- ", ingredients);
 
-                var prompt =
-                    "Using the ingredients listed below, generate a recipe in **this EXACT JSON format**:\n\n"
-                    + "{\n"
-                    + "  \"title\": \"<generated title>\",\n"
-                    + "  \"ingredients\": [\"ingredient 1\", \"ingredient 2\", ...],\n"
-                    + "  \"instructions\": [\"Step 1:\", \"Step 2:\", \"Step 3:\", ...]\n"
-                    + "}\n\n"
-                    + "Use only the ingredients provided.\n\n"
-                    + "Ingredients:\n- "
-                    + formattedIngredients;
+                var prompt = $$"""
+                Using the ingredients listed below, generate a recipe in **this EXACT JSON format**:
+
+                {
+                  "title": "<generated title>",
+                  "ingredients": ["ingredient 1", "ingredient 2", ...],
+                  "instructions": ["Step 1:", "Step 2:", "Step 3:", ...]
+                }
+
+                Rules:
+                - Use only the ingredients provided.
+                - Write clear, concise instructions (3–6 steps maximum).
+                - Avoid adding extra ingredients not in the list.
+                - Format must be valid JSON (no markdown, no text outside braces).
+                - Do not include reasoning or commentary.
+
+                Ingredients:
+                - {{formattedIngredients}}
+                """;
 
                 var recipe = await _geminiService.GetGeminiResponse(prompt);
 
@@ -105,11 +114,40 @@ namespace SmartPantry.WebApi.Controllers
                 if (image is null || image.Length == 0)
                     return BadRequest(new { message = "Image file is required." });
 
+                var categories = new[]
+                {
+                    "Fruits","Vegetables","Meat & Poultry","Seafood","Dairy & Eggs",
+                    "Grains","Legumes","Nuts & Seeds","Bakery","Snacks","Beverages",
+                    "Alcohol","Condiments","Spices & Herbs","Frozen","Prepared Meals",
+                    "Canned Foods","Oils & Fats"
+                };
+                var categoryList = string.Join("\", \"", categories);
+
+                var visionInstruction = $$"""
+                Return ONLY valid JSON (no markdown, no explanations) in this structure:
+                {
+                  "ProductName": string,
+                  "Quantity": string | null,
+                  "Brand": string | null,
+                  "Category": string,
+                  "ExpirationDate": string | null
+                }
+
+                Rules:
+                - The Category MUST be one of: ["{{categoryList}}"]
+                - Always return one category from the list, never null.
+                - If unsure, pick the closest match.
+                - For ExpirationDate:
+                  • If visible, format must be strictly "YYYY-MM-DD".
+                  • If none visible, return null.
+                - Do not include explanations, reasoning, or markdown — JSON only.
+                """;
+
                 await using var ms = new MemoryStream();
                 await image.CopyToAsync(ms, ct);
 
                 var payload = new ImagePayload(ms.ToArray(), image.ContentType);
-                var result = await _geminiService.ExtractProductFromImageAsync(payload, ct);
+                var result = await _geminiService.ExtractProductFromImageAsync(payload, visionInstruction, ct);
 
                 return Ok(result);
             }

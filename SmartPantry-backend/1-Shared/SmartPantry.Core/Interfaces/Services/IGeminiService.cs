@@ -8,6 +8,7 @@ namespace SmartPantry.Core.Interfaces.Services
         Task<List<string>> GetIngredientsFromFoodProducts(List<Guid> productIds);
         Task<ProductVisionExtract> ExtractProductFromImageAsync(
             ImagePayload image,
+            string visionInstruction,
             CancellationToken ct = default
         );
     }

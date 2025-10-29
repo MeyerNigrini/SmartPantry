@@ -28,5 +28,6 @@ export type ProductVisionExtract = {
   productName: string;
   quantity?: string;
   brand?: string;
-  categories?: string[];
+  category?: string;
+  expirationDate?: string | null;
 };

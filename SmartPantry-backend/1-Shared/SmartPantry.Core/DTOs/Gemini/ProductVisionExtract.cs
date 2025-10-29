@@ -4,6 +4,7 @@
         string ProductName,
         string? Quantity,
         string? Brand,
-        List<string> Categories
+        string? Category,
+        string? ExpirationDate
     );
 }
