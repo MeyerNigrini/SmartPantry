@@ -1,0 +1,17 @@
+meta {
+  name: generate-recipe
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{BaseURL}}{{Controller}}/generate-recipe
+  body: json
+  auth: inherit
+}
+
+body:json {
+  [
+    "224ED529-1992-4FB1-A6D0-FBF56B77B005"
+  ]
+}
