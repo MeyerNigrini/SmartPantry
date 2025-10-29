@@ -32,7 +32,7 @@ export default function ProductTable({
 
     // Category filter
     const matchesCategory =
-      !categoryFilter || categoryFilter === 'All Categories' || p.categories === categoryFilter;
+      !categoryFilter || categoryFilter === 'All Categories' || p.category === categoryFilter;
 
     // Status filter
     const matchesStatus =
@@ -140,7 +140,7 @@ export default function ProductTable({
               <Table.Td>{p.productName}</Table.Td>
               <Table.Td>{p.quantity}</Table.Td>
               <Table.Td>{p.brands}</Table.Td>
-              <Table.Td>{p.categories}</Table.Td>
+              <Table.Td>{p.category}</Table.Td>
               <Table.Td>{renderStatusBadge(p.status)}</Table.Td>
               <Table.Td>{p.expirationDate.split('T')[0]}</Table.Td>
             </Table.Tr>

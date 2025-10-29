@@ -1,29 +1,13 @@
 import type { ProductAdd, ProductResponse } from '../types/productTypes';
 import api from '../../../lib/api';
 
-// GET product details from OpenFoodFacts
-export async function fetchProductByBarcode(barcode: string): Promise<ProductAdd> {
-  const res = await api.get(`/OpenFoodFacts/${barcode}`);
-  const raw = res.data;
-
-  return {
-    barcode,
-    productName: raw.name,
-    quantity: raw.quantity,
-    brands: raw.brands,
-    categories: raw.categories,
-    expirationDate: new Date().toISOString().split('T')[0],
-  };
-}
-
 // POST product to backend
 export async function AddFoodProductForUser(product: ProductAdd): Promise<void> {
   const dto = {
-    barcode: product.barcode,
     productName: product.productName,
     quantity: product.quantity,
     brands: product.brands,
-    categories: product.categories,
+    category: product.category,
     expirationDate: product.expirationDate,
   };
   await api.post('/FoodProduct/addFoodProductForUser', dto);

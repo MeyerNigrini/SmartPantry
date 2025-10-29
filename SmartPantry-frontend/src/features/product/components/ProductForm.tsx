@@ -146,8 +146,8 @@ export default function ProductForm({ product, onChange, onSave, previewUrl, aiD
             <Select
               label="Category"
               data={FOOD_CATEGORIES}
-              value={product.categories}
-              onChange={(value) => handleChange('categories', value || '')}
+              value={product.category}
+              onChange={(value) => handleChange('category', value || '')}
               placeholder="Select category"
               searchable
             />

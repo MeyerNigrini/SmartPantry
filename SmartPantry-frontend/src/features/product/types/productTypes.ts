@@ -1,9 +1,8 @@
 export type ProductAdd = {
-  barcode: string;
   productName: string;
   quantity: string;
   brands: string;
-  categories: string;
+  category: string;
   expirationDate: string;
 };
 
@@ -12,7 +11,7 @@ export type ProductResponse = {
   productName: string;
   quantity: string;
   brands: string;
-  categories: string;
+  category: string;
   expirationDate: string;
   status: string;
   addedDate: string;

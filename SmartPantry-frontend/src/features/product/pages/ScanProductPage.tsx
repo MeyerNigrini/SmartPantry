@@ -10,11 +10,10 @@ import type { ProductAdd, ProductVisionExtract } from '../types/productTypes';
 
 export default function ScanProductPage() {
   const EMPTY_PRODUCT: ProductAdd = {
-    barcode: '',
     productName: '',
     quantity: '',
     brands: '',
-    categories: '',
+    category: '',
     expirationDate: '',
   };
 
@@ -27,7 +26,7 @@ export default function ScanProductPage() {
       productName: extracted.productName || prev.productName,
       quantity: extracted.quantity || prev.quantity,
       brands: extracted.brand || prev.brands,
-      categories: extracted.category || prev.categories,
+      category: extracted.category || prev.category,
       expirationDate: extracted.expirationDate || prev.expirationDate,
     }));
     setActiveStep(1);

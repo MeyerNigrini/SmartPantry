@@ -48,7 +48,6 @@ builder.Services.AddCors(options =>
 
 // HttpClients
 builder.Services.AddHttpClient<IGeminiService, GeminiService>();
-builder.Services.AddHttpClient<IOpenFoodFactsService, OpenFoodFactsService>();
 
 // Database context
 builder.Services.AddDbContext<SmartPantryDbContext>(options =>

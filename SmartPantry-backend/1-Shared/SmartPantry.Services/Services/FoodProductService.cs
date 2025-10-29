@@ -49,11 +49,10 @@ namespace SmartPantry.Services.Services
             {
                 Id = Guid.NewGuid(),
                 UserID = userId,
-                Barcode = dto.Barcode,
                 ProductName = dto.ProductName,
                 Quantity = dto.Quantity,
                 Brands = dto.Brands,
-                Categories = dto.Categories,
+                Category = dto.Category,
                 ExpirationDate = dto.ExpirationDate.Date,
                 AddedDate = DateTime.UtcNow,
             };
@@ -86,7 +85,7 @@ namespace SmartPantry.Services.Services
                     ProductName = p.ProductName,
                     Quantity = p.Quantity,
                     Brands = p.Brands,
-                    Categories = p.Categories,
+                    Category = p.Category,
                     ExpirationDate = p.ExpirationDate,
                     Status = ComputeStatus(p.ExpirationDate).ToString(),
                     AddedDate = p.AddedDate,

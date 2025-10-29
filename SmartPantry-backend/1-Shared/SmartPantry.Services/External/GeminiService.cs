@@ -81,7 +81,7 @@ namespace SmartPantry.Services.External
             {
                 var products = await _foodProductRepository.GetFoodProductsByIdsAsync(productIds);
                 return products
-                    .Select(p => $"{p.ProductName} - {p.Quantity} - {p.Brands} - {p.Categories}")
+                    .Select(p => $"{p.ProductName} - {p.Quantity} - {p.Brands} - {p.Category}")
                     .ToList();
             }
             catch (Exception ex)

@@ -11,9 +11,6 @@ namespace SmartPantry.Core.Entities
         public Guid UserID { get; set; }
         public UserEntity User { get; set; }
 
-        [MaxLength(100)]
-        public string Barcode { get; set; }
-
         [Required]
         [MaxLength(255)]
         public string ProductName { get; set; }
@@ -26,7 +23,7 @@ namespace SmartPantry.Core.Entities
         public string Brands { get; set; }
 
         [MaxLength(100)]
-        public string Categories { get; set; }
+        public string Category { get; set; }
         public DateTime ExpirationDate { get; set; }
         public DateTime AddedDate { get; set; }
 
