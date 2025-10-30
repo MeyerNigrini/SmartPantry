@@ -5,7 +5,11 @@ meta {
 }
 
 post {
-  url: 
-  body: none
-  auth: none
+  url: {{BaseURL}}{{Controller}}/extract-product
+  body: multipartForm
+  auth: inherit
+}
+
+body:multipart-form {
+  image: @file(C:\Users\Meyer\Downloads\SmartPantry Docs\Images\Spaghetti.jpg)
 }
