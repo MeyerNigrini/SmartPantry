@@ -14,6 +14,6 @@
         public DateTime CreateDate { get; set; }
 
         public ICollection<FoodProductEntity> FoodProducts { get; set; } = [];
-        public ICollection<MealSuggestionEntity> MealSuggestions { get; set; } = [];
+        public ICollection<RecipeEntity> Recipes { get; set; } = [];
     }
 }
