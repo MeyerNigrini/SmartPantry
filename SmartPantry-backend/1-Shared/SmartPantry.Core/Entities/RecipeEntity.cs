@@ -5,14 +5,12 @@
         public Guid Id { get; set; }
         public Guid UserID { get; set; }
         public UserEntity User { get; set; }
-
-        public string Title { get; set; } = null!;
-        public string IngredientsJson { get; set; } = "[]";
-        public string Instructions { get; set; } = string.Empty;
+        /// Recipe title.
+        public string Title { get; set; }
+        public string Ingredients { get; set; }
+        public string Instructions { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
-
-        public ICollection<RecipeFoodProductEntity> RecipeFoodProducts { get; set; } = [];
     }
 }

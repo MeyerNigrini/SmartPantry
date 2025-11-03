@@ -1,8 +1,6 @@
-﻿using System.Collections.Generic;
-
-namespace SmartPantry.Core.DTOs
+﻿namespace SmartPantry.Core.DTOs.Recipes
 {
-    public class RecipeResponseDTO
+    public class RecipeCreateDTO
     {
         public string Title { get; set; }
         public List<string> Ingredients { get; set; }

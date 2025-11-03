@@ -63,6 +63,8 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddSingleton<IPasswordService, PasswordService>();
 builder.Services.AddScoped<IFoodProductRepository, FoodProductRepository>();
 builder.Services.AddScoped<IFoodProductService, FoodProductService>();
+builder.Services.AddScoped<IRecipeRepository, RecipeRepository>();
+builder.Services.AddScoped<IRecipeService, RecipeService>();
 
 // JWT configuration
 builder.Services.Configure<JWTSettings>(builder.Configuration.GetSection("Jwt"));

@@ -26,8 +26,5 @@ namespace SmartPantry.Core.Entities
         public string Category { get; set; }
         public DateTime ExpirationDate { get; set; }
         public DateTime AddedDate { get; set; }
-
-        public ICollection<RecipeFoodProductEntity> RecipeFoodProducts { get; set; } =
-        [];
     }
 }
