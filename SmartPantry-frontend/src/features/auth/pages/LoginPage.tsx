@@ -9,7 +9,6 @@ import {
   Stack,
   Box,
   Grid,
-  Group,
   Anchor,
 } from '@mantine/core';
 import { useState } from 'react';
@@ -161,6 +160,7 @@ export default function LoginPage() {
 
                   {/* Password field */}
                   <PasswordInput
+                    pb="sm"
                     label="Password"
                     placeholder="Enter your password"
                     value={password}
@@ -168,13 +168,6 @@ export default function LoginPage() {
                     leftSection={<IconLock size={16} />}
                     autoComplete="current-password"
                   />
-
-                  {/* Forgot Password link */}
-                  <Group justify="flex-end" mt={-6}>
-                    <Anchor href="#" underline="hover" fz="sm" c="dimmed">
-                      Forgot password?
-                    </Anchor>
-                  </Group>
 
                   {/* Primary action: Sign In */}
                   <Button
