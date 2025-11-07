@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { Box, Button, Card, Center, SimpleGrid, Stack, Text, Title } from '@mantine/core';
-import { Package, Scan } from 'lucide-react';
+import { Package, Scan, BookOpen } from 'lucide-react';
 import cardClasses from '../../../styles/common/SharedCard.module.css';
 import classes from '../styles/HomePage.module.css';
 
@@ -20,13 +20,21 @@ export default function HomePage() {
       </Stack>
 
       {/* Action Cards */}
-      <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="xl" maw={600} w="100%" mt="lg">
+      <SimpleGrid
+        cols={3}
+        spacing="xl"
+        w="100%"
+        maw={1000}
+        mt="lg"
+        className={classes.responsiveGrid}
+      >
         {/* Add Product */}
         <Card
           withBorder
           radius="md"
           shadow="sm"
           className={cardClasses.sharedCard}
+          style={{ minWidth: 280 }}
           onClick={() => navigate('/scan-product')}
         >
           <Card.Section>
@@ -43,9 +51,10 @@ export default function HomePage() {
               Use AI to scan and add new products to your pantry
             </Text>
             <Button
+              variant="outline"
               mt="sm"
               fullWidth
-              className={classes.primaryButton}
+              className={classes.outlineButton}
               onClick={() => navigate('/scan-product')}
             >
               Start Scanning
@@ -59,6 +68,7 @@ export default function HomePage() {
           radius="md"
           shadow="sm"
           className={cardClasses.sharedCard}
+          style={{ minWidth: 280 }}
           onClick={() => navigate('/products')}
         >
           <Card.Section>
@@ -75,13 +85,46 @@ export default function HomePage() {
               Manage your products and generate recipes
             </Text>
             <Button
+              mt="sm"
+              fullWidth
+              className={classes.primaryButton}
+              onClick={() => navigate('/products')}
+            >
+              Open Pantry
+            </Button>
+          </Stack>
+        </Card>
+
+        {/* Recipes */}
+        <Card
+          withBorder
+          radius="md"
+          shadow="sm"
+          className={cardClasses.sharedCard}
+          style={{ minWidth: 280 }}
+          onClick={() => navigate('/recipes')}
+        >
+          <Card.Section>
+            <Center>
+              <Box className={`${classes.iconWrapper} ${classes.icon}`}>
+                <BookOpen size={36} />
+              </Box>
+            </Center>
+          </Card.Section>
+
+          <Stack align="center" mt="md" ta="center">
+            <Text fw={600}>Recipes</Text>
+            <Text c="dimmed" fz="sm" maw={260}>
+              Browse, edit, and manage your saved recipes
+            </Text>
+            <Button
               variant="outline"
               mt="sm"
               fullWidth
               className={classes.outlineButton}
-              onClick={() => navigate('/products')}
+              onClick={() => navigate('/recipes')}
             >
-              Open Pantry
+              Open Recipes
             </Button>
           </Stack>
         </Card>

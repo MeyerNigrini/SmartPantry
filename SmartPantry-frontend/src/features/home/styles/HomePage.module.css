@@ -1,3 +1,22 @@
+.responsiveGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(280px, 1fr));
+  gap: var(--mantine-spacing-xl);
+  justify-content: center;
+}
+
+@media (max-width: 900px) {
+  .responsiveGrid {
+    grid-template-columns: repeat(2, minmax(280px, 1fr));
+  }
+}
+
+@media (max-width: 600px) {
+  .responsiveGrid {
+    grid-template-columns: repeat(1, minmax(280px, 1fr));
+  }
+}
+
 .iconWrapper {
   width: 64px;
   height: 64px;
