@@ -11,6 +11,7 @@ import RegisterPage from '../features/auth/pages/RegisterPage';
 // Guards and shared layout
 import ProtectedRoute from './ProtectedRoute';
 import Layout from '../components/Layout';
+import RecipeListPage from '../features/product/pages/RecipeListPage';
 
 export default function AppRoutes() {
   return (
@@ -30,6 +31,7 @@ export default function AppRoutes() {
         <Route path="/home" element={<HomePage />} />
         <Route path="/scan-product" element={<ScanProductPage />} />
         <Route path="/products" element={<ProductListPage />} />
+        <Route path="/recipes" element={<RecipeListPage />} />
         {/* Add more protected routes here */}
       </Route>
     </Routes>
