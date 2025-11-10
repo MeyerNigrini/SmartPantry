@@ -61,8 +61,8 @@ export default function Navbar() {
 
       {/* Center Navigation Links */}
       <Group gap="xs" visibleFrom="md">
-        <NavButton to="/products">My Products</NavButton>
         <NavButton to="/scan-product">Scan Product</NavButton>
+        <NavButton to="/products">My Products</NavButton>
         <NavButton to="/recipes">Recipes</NavButton>
       </Group>
 
