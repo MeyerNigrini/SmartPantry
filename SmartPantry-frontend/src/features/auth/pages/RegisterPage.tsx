@@ -11,15 +11,24 @@ import {
   SimpleGrid,
   Anchor,
 } from '@mantine/core';
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { IconMail, IconLock, IconUser } from '@tabler/icons-react';
+import { useNavigate } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
 
 import { register } from '../services/authService';
 
 // Notification helpers
 import { showCustomNotification } from '../../../components/CustomNotification';
 import { getErrorMessage } from '../../../utils/errorHelpers';
+
+type RegisterFormValues = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+};
+
 /**
  * RegisterPage Component
  *
@@ -29,38 +38,25 @@ import { getErrorMessage } from '../../../utils/errorHelpers';
 export default function RegisterPage() {
   const navigate = useNavigate();
 
-  // Form state
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const {
+    register: formRegister,
+    handleSubmit,
+    watch,
+    formState: { errors, isSubmitting },
+  } = useForm<RegisterFormValues>({
+    mode: 'onSubmit',
+  });
 
-  const [submitting, setSubmitting] = useState(false);
+  const passwordValue = watch('password');
 
-  /**
-   * Handle registration form submission
-   *
-   * Validates password match before calling API.
-   * On success, redirects to login page.
-   * On failure, displays appropriate error message.
-   */
-  const handleRegister = async () => {
-    setSubmitting(true);
-
-    // Ensure user confirms their password correctly
-    if (password !== confirmPassword) {
-      showCustomNotification({
-        message: "Passwords don't match",
-        type: 'error',
-      });
-      setSubmitting(false);
-      return;
-    }
-
+  const onSubmit = async (data: RegisterFormValues) => {
     try {
-      // Attempt to register the user with backend API
-      await register({ firstName, lastName, email, password });
+      await register({
+        firstName: data.firstName,
+        lastName: data.lastName,
+        email: data.email,
+        password: data.password,
+      });
 
       showCustomNotification({
         message: 'Registration successful! Please log in.',
@@ -74,8 +70,6 @@ export default function RegisterPage() {
         message: getErrorMessage(err, 'Registration failed. Please try again.'),
         type: 'error',
       });
-    } finally {
-      setSubmitting(false);
     }
   };
 
@@ -136,14 +130,7 @@ export default function RegisterPage() {
             }}
           >
             <Paper withBorder shadow="sm" p="xl" radius="md" maw={520} w="100%">
-              {/* Form wrapper: allows Enter key to submit registration */}
-              <form
-                onSubmit={(e) => {
-                  // Prevent full page reload, run React handler instead
-                  e.preventDefault();
-                  handleRegister();
-                }}
-              >
+              <form onSubmit={handleSubmit(onSubmit)}>
                 <Stack gap="sm">
                   {/* Header */}
                   <Box ta="center" mb="sm">
@@ -160,18 +147,31 @@ export default function RegisterPage() {
                     <TextInput
                       label="First Name"
                       placeholder="First name"
-                      value={firstName}
-                      onChange={(e) => setFirstName(e.currentTarget.value)}
                       leftSection={<IconUser size={16} />}
                       autoComplete="given-name"
+                      {...formRegister('firstName', {
+                        required: 'First name is required',
+                        minLength: {
+                          value: 2,
+                          message: 'At least 2 characters',
+                        },
+                      })}
+                      error={errors.firstName?.message as string}
                     />
+
                     <TextInput
                       label="Last Name"
                       placeholder="Last name"
-                      value={lastName}
-                      onChange={(e) => setLastName(e.currentTarget.value)}
                       leftSection={<IconUser size={16} />}
                       autoComplete="family-name"
+                      {...formRegister('lastName', {
+                        required: 'Last name is required',
+                        minLength: {
+                          value: 2,
+                          message: 'At least 2 characters',
+                        },
+                      })}
+                      error={errors.lastName?.message as string}
                     />
                   </SimpleGrid>
 
@@ -179,32 +179,46 @@ export default function RegisterPage() {
                   <TextInput
                     label="Email"
                     placeholder="Enter your email"
-                    value={email}
-                    onChange={(e) => setEmail(e.currentTarget.value)}
                     leftSection={<IconMail size={16} />}
                     autoComplete="email"
+                    {...formRegister('email', {
+                      required: 'Email is required',
+                      pattern: {
+                        value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                        message: 'Invalid email format',
+                      },
+                    })}
+                    error={errors.email?.message as string}
                   />
 
-                  {/* Passwords */}
                   <PasswordInput
                     label="Password"
                     placeholder="Create a password"
-                    value={password}
-                    onChange={(e) => setPassword(e.currentTarget.value)}
                     leftSection={<IconLock size={16} />}
                     autoComplete="new-password"
+                    {...formRegister('password', {
+                      required: 'Password is required',
+                      minLength: {
+                        value: 6,
+                        message: 'Minimum 6 characters',
+                      },
+                    })}
+                    error={errors.password?.message as string}
                   />
+
                   <PasswordInput
                     label="Confirm Password"
                     placeholder="Confirm your password"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.currentTarget.value)}
                     leftSection={<IconLock size={16} />}
                     autoComplete="new-password"
+                    {...formRegister('confirmPassword', {
+                      required: 'Please confirm your password',
+                      validate: (value) => value === passwordValue || 'Passwords do not match',
+                    })}
+                    error={errors.confirmPassword?.message as string}
                   />
-
                   {/* Submit */}
-                  <Button fullWidth type="submit" loading={submitting} disabled={submitting}>
+                  <Button fullWidth type="submit" loading={isSubmitting} disabled={isSubmitting}>
                     Create Account
                   </Button>
 
