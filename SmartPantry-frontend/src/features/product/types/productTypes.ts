@@ -18,9 +18,22 @@ export type ProductResponse = {
 };
 
 export type Recipe = {
+  id: string;
   title: string;
   ingredients: string[];
   instructions: string[];
+};
+
+export type RecipeCreateDTO = {
+  title: string;
+  ingredients: string[];
+  instructions: string[];
+};
+
+export type RecipeUpdateDTO = {
+  title?: string;
+  ingredients?: string[];
+  instructions?: string[];
 };
 
 export type ProductVisionExtract = {

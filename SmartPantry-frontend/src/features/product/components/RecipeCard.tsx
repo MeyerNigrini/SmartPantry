@@ -1,4 +1,7 @@
-import { Card, Title, Text } from '@mantine/core';
+import { Card, Title, Text, Button, Group } from '@mantine/core';
+import { AddRecipeForUser } from '../services/recipeService';
+import { showCustomNotification } from '../../../components/CustomNotification';
+import { getErrorMessage } from '../../../utils/errorHelpers';
 import type { Recipe } from '../types/productTypes';
 
 type Props = {
@@ -6,6 +9,22 @@ type Props = {
 };
 
 export default function RecipeCard({ recipe }: Props) {
+  const handleSave = async () => {
+    try {
+      await AddRecipeForUser({
+        title: recipe.title,
+        ingredients: recipe.ingredients,
+        instructions: recipe.instructions,
+      });
+    } catch (err) {
+      console.error(err);
+      showCustomNotification({
+        message: getErrorMessage(err, 'Failed to save recipe.'),
+        type: 'error',
+      });
+    }
+  };
+
   return (
     <Card shadow="sm" radius="md" p="lg" withBorder mt="xs">
       <Title order={4} mb="md">
@@ -33,6 +52,11 @@ export default function RecipeCard({ recipe }: Props) {
           ))}
         </ol>
       </div>
+      <Group mt="md" justify="flex-end">
+        <Button onClick={handleSave} color="dark" variant="filled">
+          Save Recipe
+        </Button>
+      </Group>
     </Card>
   );
 }
