@@ -23,15 +23,17 @@ namespace SmartPantry.Core.Interfaces.Services
         Task<IEnumerable<RecipeResponseDTO>> GetAllRecipesForUserAsync(Guid userId);
 
         /// <summary>
-        /// Updates an existing recipe that belongs to the specified user.
+        /// Deletes a recipe if it belongs to the given user.
         /// </summary>
-        /// <param name="dto">The updated recipe details, including title, ingredients, and instructions.</param>
-        /// <param name="userId">The ID of the user who owns the recipe.</param>
+        /// <param name="recipeId">The recipe ID to delete.</param>
+        /// <param name="userId">The authenticated user's ID.</param>
         /// <exception cref="InvalidInputException">
-        /// Thrown when the input data or user ID is invalid, or when the recipe does not exist for the user.
+        /// Thrown when IDs are invalid or the recipe does not exist / is not owned by the user.
         /// </exception>
         /// <exception cref="PersistenceException">
-        /// Thrown when a database or repository failure occurs during update.
+        /// Thrown when a repository/database failure occurs.
         /// </exception>
+        Task DeleteRecipeForUserAsync(Guid recipeId, Guid userId);
+
     }
 }

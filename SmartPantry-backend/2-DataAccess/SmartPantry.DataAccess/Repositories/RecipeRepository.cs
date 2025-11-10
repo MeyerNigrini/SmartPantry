@@ -65,5 +65,41 @@ namespace SmartPantry.DataAccess.Repositories
                 throw;
             }
         }
+
+        /// <inheritdoc />
+        public async Task<bool> DeleteRecipeByIdForUserAsync(Guid recipeId, Guid userId)
+        {
+            if (recipeId == Guid.Empty || userId == Guid.Empty)
+            {
+                _logger.LogWarning("Attempted to delete with invalid IDs. RecipeId: {RecipeId}, UserId: {UserId}", recipeId, userId);
+                return false;
+            }
+
+            try
+            {
+                var recipe = await _context.Recipes
+                    .FirstOrDefaultAsync(r => r.Id == recipeId && r.UserID == userId);
+
+                if (recipe == null)
+                {
+                    _logger.LogInformation("No recipe found for delete. RecipeId: {RecipeId}, UserId: {UserId}", recipeId, userId);
+                    return false;
+                }
+
+                _context.Recipes.Remove(recipe);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (DbUpdateException ex)
+            {
+                _logger.LogError(ex, "DB update failed while deleting recipe {RecipeId} for user {UserId}", recipeId, userId);
+                throw;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Unexpected error while deleting recipe {RecipeId} for user {UserId}", recipeId, userId);
+                throw;
+            }
+        }
     }
 }

@@ -95,5 +95,42 @@ namespace SmartPantry.WebApi.Controllers
                 return StatusCode(500, new { message = "An unexpected error occurred." });
             }
         }
+
+        /// <summary>
+        /// Deletes a recipe owned by the authenticated user.
+        /// </summary>
+        [HttpDelete("deleteRecipeForUser/{recipeId:guid}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> DeleteRecipeForUser([FromRoute] Guid recipeId)
+        {
+            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userIdString) || !Guid.TryParse(userIdString, out var userId))
+                return Unauthorized();
+
+            try
+            {
+                await _service.DeleteRecipeForUserAsync(recipeId, userId);
+                return Ok(new { message = "Recipe deleted successfully" });
+            }
+            catch (InvalidInputException ex)
+            {
+                _logger.LogWarning(ex, "Invalid delete attempt for recipe {RecipeId} by user {UserId}", recipeId, userId);
+                return NotFound(new { message = ex.Message });
+            }
+            catch (PersistenceException ex)
+            {
+                _logger.LogError(ex, "Database failure while deleting recipe {RecipeId} for user {UserId}", recipeId, userId);
+                return StatusCode(500, new { message = "Could not delete recipe." });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Unexpected error while deleting recipe {RecipeId} for user {UserId}", recipeId, userId);
+                return StatusCode(500, new { message = "An unexpected error occurred." });
+            }
+        }
     }
 }

@@ -20,5 +20,14 @@ namespace SmartPantry.Core.Interfaces.Repositories
         /// <param name="userId">The unique identifier of the user.</param>
         /// <returns>A list of recipe entities owned by the user.</returns>
         Task<List<RecipeEntity>> GetAllRecipesByUserIdAsync(Guid userId);
+
+        /// <summary>
+        /// Deletes the recipe by ID if it belongs to the given user.
+        /// Returns true if deletion succeeded; false if not found or not owned by the user.
+        /// </summary>
+        /// <param name="recipeId">The ID of the recipe to delete.</param>
+        /// <param name="userId">The authenticated user's ID.</param>
+        Task<bool> DeleteRecipeByIdForUserAsync(Guid recipeId, Guid userId);
+
     }
 }

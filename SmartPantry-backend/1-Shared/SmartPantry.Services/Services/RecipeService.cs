@@ -85,5 +85,29 @@ namespace SmartPantry.Services.Services
                 throw new PersistenceException("Failed to retrieve recipes.", ex);
             }
         }
+
+        /// <inheritdoc />
+        public async Task DeleteRecipeForUserAsync(Guid recipeId, Guid userId)
+        {
+            if (recipeId == Guid.Empty || userId == Guid.Empty)
+                throw new InvalidInputException("Invalid recipe or user ID.");
+
+            try
+            {
+                var deleted = await _repository.DeleteRecipeByIdForUserAsync(recipeId, userId);
+
+                if (!deleted)
+                    throw new InvalidInputException("Recipe not found or does not belong to the user.");
+            }
+            catch (PersistenceException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Unexpected error while deleting recipe {RecipeId} for user {UserId}", recipeId, userId);
+                throw new PersistenceException("Unexpected error occurred while deleting the recipe.", ex);
+            }
+        }
     }
 }
