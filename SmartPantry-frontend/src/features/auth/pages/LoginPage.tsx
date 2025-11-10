@@ -11,10 +11,9 @@ import {
   Grid,
   Anchor,
 } from '@mantine/core';
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-
 import { IconMail, IconLock } from '@tabler/icons-react';
+import { useNavigate } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
 
 // API service for performing the login HTTP request
 import { login as loginApi } from '../services/authService';
@@ -36,9 +35,18 @@ export default function LoginPage() {
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [submitting, setSubmitting] = useState(false);
+  type LoginFormValues = {
+    email: string;
+    password: string;
+  };
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<LoginFormValues>({
+    mode: 'onSubmit',
+  });
 
   /**
    * Handle form submission
@@ -47,13 +55,13 @@ export default function LoginPage() {
    * If successful, persists auth state and redirects to `/home`.
    * If failed, displays an error message via a notification.
    */
-  const handleLogin = async () => {
-    setSubmitting(true);
-
+  const onSubmit = async (data: LoginFormValues) => {
     try {
       // Call backend login API with credentials
-      const user = await loginApi({ email, password });
-
+      const user = await loginApi({
+        email: data.email,
+        password: data.password,
+      });
       // Save user in context
       login(user);
 
@@ -64,8 +72,6 @@ export default function LoginPage() {
         message: getErrorMessage(err, 'Login failed. Please try again.'),
         type: 'error',
       });
-    } finally {
-      setSubmitting(false);
     }
   };
 
@@ -132,12 +138,7 @@ export default function LoginPage() {
             {/* Auth card */}
             <Paper withBorder shadow="sm" p="xl" radius="md" maw={420} w="100%">
               {/* Form wrapper: allows Enter key to trigger submission in addition to button click */}
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  handleLogin();
-                }}
-              >
+              <form onSubmit={handleSubmit(onSubmit)}>
                 <Stack gap="sm">
                   <Box ta="center" mb="sm">
                     <Title order={2} mb={4}>
@@ -152,10 +153,16 @@ export default function LoginPage() {
                   <TextInput
                     label="Email"
                     placeholder="Enter your email"
-                    value={email}
-                    onChange={(e) => setEmail(e.currentTarget.value)}
                     leftSection={<IconMail size={16} />}
                     autoComplete="email"
+                    {...register('email', {
+                      required: 'Email is required',
+                      pattern: {
+                        value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                        message: 'Invalid email format',
+                      },
+                    })}
+                    error={errors.email?.message as string | undefined}
                   />
 
                   {/* Password field */}
@@ -163,19 +170,20 @@ export default function LoginPage() {
                     pb="sm"
                     label="Password"
                     placeholder="Enter your password"
-                    value={password}
-                    onChange={(e) => setPassword(e.currentTarget.value)}
                     leftSection={<IconLock size={16} />}
                     autoComplete="current-password"
+                    {...register('password', {
+                      required: 'Password is required',
+                      minLength: {
+                        value: 6,
+                        message: 'Minimum 6 characters',
+                      },
+                    })}
+                    error={errors.password?.message as string | undefined}
                   />
 
                   {/* Primary action: Sign In */}
-                  <Button
-                    fullWidth
-                    type="submit"
-                    loading={submitting}
-                    disabled={submitting || !email || !password}
-                  >
+                  <Button fullWidth type="submit" loading={isSubmitting}>
                     Sign in
                   </Button>
 

@@ -21,14 +21,6 @@ import { register } from '../services/authService';
 import { showCustomNotification } from '../../../components/CustomNotification';
 import { getErrorMessage } from '../../../utils/errorHelpers';
 
-type RegisterFormValues = {
-  firstName: string;
-  lastName: string;
-  email: string;
-  password: string;
-  confirmPassword: string;
-};
-
 /**
  * RegisterPage Component
  *
@@ -37,6 +29,14 @@ type RegisterFormValues = {
  */
 export default function RegisterPage() {
   const navigate = useNavigate();
+
+  type RegisterFormValues = {
+    firstName: string;
+    lastName: string;
+    email: string;
+    password: string;
+    confirmPassword: string;
+  };
 
   const {
     register: formRegister,
