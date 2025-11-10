@@ -101,5 +101,53 @@ namespace SmartPantry.DataAccess.Repositories
                 throw;
             }
         }
+
+        /// <inheritdoc />
+        public async Task<RecipeEntity?> UpdateRecipeForUserAsync(Guid recipeId, Guid userId, RecipeEntity updatedRecipe)
+        {
+            if (recipeId == Guid.Empty || userId == Guid.Empty)
+            {
+                _logger.LogWarning("Attempted to update with invalid IDs. RecipeId: {RecipeId}, UserId: {UserId}", recipeId, userId);
+                return null;
+            }
+
+            try
+            {
+                var existingRecipe = await _context.Recipes
+                    .FirstOrDefaultAsync(r => r.Id == recipeId && r.UserID == userId);
+
+                if (existingRecipe == null)
+                {
+                    _logger.LogInformation("No recipe found for update. RecipeId: {RecipeId}, UserId: {UserId}", recipeId, userId);
+                    return null;
+                }
+
+                // Apply updates only to provided fields
+                if (!string.IsNullOrWhiteSpace(updatedRecipe.Title))
+                    existingRecipe.Title = updatedRecipe.Title.Trim();
+
+                if (!string.IsNullOrWhiteSpace(updatedRecipe.Ingredients))
+                    existingRecipe.Ingredients = updatedRecipe.Ingredients;
+
+                if (!string.IsNullOrWhiteSpace(updatedRecipe.Instructions))
+                    existingRecipe.Instructions = updatedRecipe.Instructions;
+
+                existingRecipe.UpdatedAt = DateTime.UtcNow;
+
+                await _context.SaveChangesAsync();
+
+                return existingRecipe;
+            }
+            catch (DbUpdateException ex)
+            {
+                _logger.LogError(ex, "DB update failed while updating recipe {RecipeId} for user {UserId}", recipeId, userId);
+                throw;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Unexpected error while updating recipe {RecipeId} for user {UserId}", recipeId, userId);
+                throw;
+            }
+        }
     }
 }

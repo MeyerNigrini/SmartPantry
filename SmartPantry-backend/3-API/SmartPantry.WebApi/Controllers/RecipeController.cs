@@ -132,5 +132,42 @@ namespace SmartPantry.WebApi.Controllers
                 return StatusCode(500, new { message = "An unexpected error occurred." });
             }
         }
+
+        /// <summary>
+        /// Updates an existing recipe owned by the authenticated user.
+        /// </summary>
+        [HttpPatch("updateRecipeForUser/{recipeId:guid}")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(RecipeResponseDTO))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> UpdateRecipeForUser([FromRoute] Guid recipeId, [FromBody] RecipeUpdateDTO dto)
+        {
+            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userIdString) || !Guid.TryParse(userIdString, out var userId))
+                return Unauthorized();
+
+            try
+            {
+                var updatedRecipe = await _service.UpdateRecipeForUserAsync(recipeId, dto, userId);
+                return Ok(updatedRecipe);
+            }
+            catch (InvalidInputException ex)
+            {
+                _logger.LogWarning(ex, "Invalid update attempt for recipe {RecipeId} by user {UserId}", recipeId, userId);
+                return NotFound(new { message = ex.Message });
+            }
+            catch (PersistenceException ex)
+            {
+                _logger.LogError(ex, "Database failure while updating recipe {RecipeId} for user {UserId}", recipeId, userId);
+                return StatusCode(500, new { message = "Could not update recipe." });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Unexpected error while updating recipe {RecipeId} for user {UserId}", recipeId, userId);
+                return StatusCode(500, new { message = "An unexpected error occurred." });
+            }
+        }
     }
 }

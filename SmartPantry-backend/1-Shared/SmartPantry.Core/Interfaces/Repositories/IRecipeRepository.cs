@@ -29,5 +29,13 @@ namespace SmartPantry.Core.Interfaces.Repositories
         /// <param name="userId">The authenticated user's ID.</param>
         Task<bool> DeleteRecipeByIdForUserAsync(Guid recipeId, Guid userId);
 
+        /// <summary>
+        /// Updates an existing recipe owned by the specified user.
+        /// Returns the updated recipe entity, or null if not found or not owned by the user.
+        /// </summary>
+        /// <param name="recipeId">The ID of the recipe to update.</param>
+        /// <param name="userId">The authenticated user's ID.</param>
+        /// <param name="updatedRecipe">The recipe entity containing updated values.</param>
+        Task<RecipeEntity?> UpdateRecipeForUserAsync(Guid recipeId, Guid userId, RecipeEntity updatedRecipe);
     }
 }

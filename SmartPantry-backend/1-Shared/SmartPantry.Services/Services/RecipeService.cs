@@ -109,5 +109,67 @@ namespace SmartPantry.Services.Services
                 throw new PersistenceException("Unexpected error occurred while deleting the recipe.", ex);
             }
         }
+
+        /// <inheritdoc />
+        public async Task<RecipeResponseDTO> UpdateRecipeForUserAsync(Guid recipeId, RecipeUpdateDTO dto, Guid userId)
+        {
+            if (recipeId == Guid.Empty || userId == Guid.Empty)
+                throw new InvalidInputException("Invalid recipe or user ID.");
+
+            if (dto == null)
+                throw new InvalidInputException("Recipe update data is required.");
+
+            // Ensure at least one field is being updated
+            var hasUpdate =
+                !string.IsNullOrWhiteSpace(dto.Title) ||
+                (dto.Ingredients != null && dto.Ingredients.Any()) ||
+                (dto.Instructions != null && dto.Instructions.Any());
+
+            if (!hasUpdate)
+                throw new InvalidInputException("At least one field must be provided to update the recipe.");
+
+            try
+            {
+                // Only include fields that were actually provided
+                var updatedEntity = new RecipeEntity
+                {
+                    Title = dto.Title?.Trim(),
+                    Ingredients = dto.Ingredients != null
+                        ? string.Join("\n", dto.Ingredients)
+                        : null,
+                    Instructions = dto.Instructions != null
+                        ? string.Join("\n", dto.Instructions)
+                        : null,
+                    UpdatedAt = DateTime.UtcNow
+                };
+
+                var savedRecipe = await _repository.UpdateRecipeForUserAsync(recipeId, userId, updatedEntity);
+
+                if (savedRecipe == null)
+                    throw new InvalidInputException("Recipe not found or does not belong to the user.");
+
+                return new RecipeResponseDTO
+                {
+                    Id = savedRecipe.Id,
+                    Title = savedRecipe.Title,
+                    Ingredients = (savedRecipe.Ingredients ?? string.Empty)
+                        .Split('\n', StringSplitOptions.RemoveEmptyEntries)
+                        .ToList(),
+                    Instructions = (savedRecipe.Instructions ?? string.Empty)
+                        .Split('\n', StringSplitOptions.RemoveEmptyEntries)
+                        .ToList(),
+                    CreatedAt = savedRecipe.CreatedAt
+                };
+            }
+            catch (InvalidInputException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error updating recipe {RecipeId} for user {UserId}", recipeId, userId);
+                throw new PersistenceException("Could not update the recipe.", ex);
+            }
+        }
     }
 }
