@@ -1,11 +1,11 @@
 meta {
-  name: addRecipeForUser
+  name: updateRecipeForUser
   type: http
-  seq: 1
+  seq: 4
 }
 
-post {
-  url: {{BaseURL}}{{Controller}}/addRecipeForUser
+patch {
+  url: {{BaseURL}}{{Controller}}/updateRecipeForUser/{{recipeID}}
   body: json
   auth: inherit
 }
@@ -20,4 +20,8 @@ body:json {
       "string"
     ]
   }
+}
+
+vars:pre-request {
+  recipeID: 3846d143-acaa-4839-b513-0e2943573f7b
 }

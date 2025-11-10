@@ -5,7 +5,11 @@ meta {
 }
 
 delete {
-  url: 
+  url: {{BaseURL}}{{Controller}}/deleteRecipeForUser/{{recipeID}}
   body: none
-  auth: none
+  auth: inherit
+}
+
+vars:pre-request {
+  recipeID: 6cd4b70e-b5c6-4ee0-a7bc-de32bccbf32e
 }
