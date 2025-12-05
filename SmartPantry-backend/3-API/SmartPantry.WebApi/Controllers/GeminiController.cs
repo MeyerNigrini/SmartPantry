@@ -48,23 +48,47 @@ namespace SmartPantry.WebApi.Controllers
                 var formattedIngredients = string.Join("\n- ", ingredients);
 
                 var prompt = $$"""
-                Using the ingredients listed below, generate a recipe in **this EXACT JSON format**:
+                Using ONLY the ingredients listed below, generate a complete recipe in this EXACT JSON format:
 
                 {
                   "title": "<generated title>",
                   "ingredients": ["ingredient 1", "ingredient 2", ...],
-                  "instructions": ["Step 1:", "Step 2:", "Step 3:", ...]
+                  "instructions": ["Step 1", "Step 2", "Step 3", ...]
                 }
 
-                Rules:
-                - Use only the ingredients provided.
-                - Write clear, concise instructions (3–6 steps maximum).
-                - Avoid adding extra ingredients not in the list.
-                - Format must be valid JSON (no markdown, no text outside braces).
-                - Do not include reasoning or commentary.
+                Do NOT change the JSON structure.
+
+                Rules:          
+                - Ingredients are given as: "<ProductName> - <Quantity> - <Brand> - <Category>"
+                - When adding to the "ingredients" array:
+                  • Keep only the product name and the useful cooking amount.
+                  • Convert bulk amounts into realistic cooking measurements.
+                    Examples:
+                      "400 g" → "2 tbsp Peanut Butter" or "200 g Peanut Butter"
+                      "500g" → treat as "500 g"
+                      "1 L" → convert to "250 ml" or "1 cup"
+                  • Sauces, spreads, condiments, and oils must be limited to small realistic amounts:
+                      - Use 1–4 tbsp total unless the dish is sauce-based.
+                      - Never convert these into cups unless absolutely necessary.
+                  • Order ingredients in this sequence:
+                      1. base items (wraps, rice, pasta)
+                      2. proteins
+                      3. vegetables and fruits
+                      4. dairy and cheese
+                      5. sauces, condiments, and oils
+                      6. spices or extras
+                  • Ingredient strings must look like normal cookbook ingredients.
+                - Instructions must read like real cookbook steps:
+                  • clear, short, professional
+                  • reference only the selected ingredients
+                  • avoid any commentary or reasoning
+                - Title must sound like a proper cookbook recipe.
+                  • Do NOT invent flavours or adjectives not clearly supported by the ingredients.
+                  • Sweet Chili Sauce should NOT be treated as a spicy ingredient unless combined with hot spices.
+                - Output must be valid JSON only (no markdown, no explanations, no text outside the braces).
 
                 Ingredients:
-                - {{formattedIngredients}}
+                {{formattedIngredients}}
                 """;
 
                 var recipe = await _geminiService.GetGeminiResponse(prompt);

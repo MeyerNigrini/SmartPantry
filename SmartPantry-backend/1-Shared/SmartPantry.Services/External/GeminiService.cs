@@ -62,7 +62,7 @@ namespace SmartPantry.Services.External
                 : _settings.Model;
 
             _geminiEndpoint =
-                $"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={apiKey}";
+                $"https://generativelanguage.googleapis.com/v1/models/{model}:generateContent?key={apiKey}";
         }
 
         /// <summary>
@@ -148,7 +148,6 @@ namespace SmartPantry.Services.External
                 },
                 generation_config = new
                 {
-                    response_mime_type = "application/json",
                     temperature = 0.2,
                 },
             };
