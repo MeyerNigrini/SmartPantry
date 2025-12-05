@@ -179,7 +179,12 @@ export function RecipeModal({ recipe, onClose, onDeleted, onUpdated }: Props) {
               >
                 Delete
               </Button>
-              <Button leftSection={<IconPencil size={16} />} onClick={() => setIsEdit(true)}>
+              <Button
+                leftSection={<IconPencil size={16} />}
+                onClick={() => setIsEdit(true)}
+                color="dark"
+                variant="filled"
+              >
                 Edit
               </Button>
             </>
