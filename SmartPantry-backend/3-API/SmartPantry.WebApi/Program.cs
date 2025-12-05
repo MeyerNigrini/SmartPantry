@@ -20,6 +20,12 @@ builder.Services.AddHttpClient<IGeminiService, GeminiService>(client =>
 {
     var timeout = builder.Configuration.GetValue<int?>("Gemini:TimeoutSeconds") ?? 20;
     client.Timeout = TimeSpan.FromSeconds(timeout);
+})
+.AddStandardResilienceHandler(options =>
+{
+    options.Retry.MaxRetryAttempts = 5; 
+    options.Retry.BackoffType = Polly.DelayBackoffType.Exponential; 
+    options.TotalRequestTimeout.Timeout = TimeSpan.FromSeconds(60);
 });
 
 // Allow image uploads up to configured size (default 20 MB)
@@ -46,8 +52,6 @@ builder.Services.AddCors(options =>
     );
 });
 
-// HttpClients
-builder.Services.AddHttpClient<IGeminiService, GeminiService>();
 
 // Database context
 builder.Services.AddDbContext<SmartPantryDbContext>(options =>
