@@ -150,24 +150,26 @@ This repository includes a **Bruno API collection** for testing SmartPantry back
 
 
 ##  Screenshots
-### Login:
+### Login Page:
 ![Login](docs/screenshots/login.png) 
-### Register:
+### Register Page:
 ![Register](docs/screenshots/register.png)
-### Product Scan:
+### Home Page:
+![Home](docs/screenshots/home.png)
+### Add Product Page:
 ![Capture](docs/screenshots/scan.png)
 ![Capture](docs/screenshots/scan_v2.png)
-### Products / Recipe:
+### View Pantry Page:
 ![Inventory](docs/screenshots/myProducts.png)
-
-
+### Recipes Page:
+![Recipes](docs/screenshots/recipes.png)
+![Recipes](docs/screenshots/recipes_modal.png)
+![Recipes](docs/screenshots/recipes_modal_edit.png)
 
 ##  Planned Improvements
 
 -  Cloud deployment via **Azure App Service + SQL Database**
--  User profile management
-- Recipe saving and editing
-
+-  Nutrients and Calorie Tracking
 
 ## About
 
